@@ -39,9 +39,9 @@ Aquesta és una visió general dels arxius principals dins de la carpeta `JABoar
 
 ## 🤝 Crèdits
 
-El disseny i el codi inicial va ser concebut per **JABITXU**. ![JAB_logo](./img/JAB_flor_itb_per_retall_cercle800x800.png)
+El disseny i el codi inicial va ser concebut per **JABITXU**. ![JAB_logo](./img/JAB_flor_itb_per_retall_cercle800x800.ico)
 
 Aquest projecte va ser cuinat amb l'assistència d'Intel·ligència Artificial:
 
-* **ChatGPT** ![JAB_logo](./img/ChatGPT_logo.svg)
+* **ChatGPT** ![JAB_logo](./img/ChatGPT_logo.ico)
 * **Gemini**![JAB_logo](./img/gemini-color.svg)
