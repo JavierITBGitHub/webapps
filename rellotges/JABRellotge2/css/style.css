@@ -65,7 +65,8 @@ h2 { /* Estil per al nom de la ciutat */
 
 /* Rellotge i data */
 #rellotge, #rellotgeVic {
-    font-size: 2.8rem;
+    /* MODIFICAT: Utilitzem vw (Viewport Width) per aprofitar tot l'espai a pantalles grans */
+    font-size: 6vw;
     font-weight: 600;
     color: #00e5ff;
     text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
@@ -84,6 +85,18 @@ h2 { /* Estil per al nom de la ciutat */
     font-size: 1.5rem;
     font-weight: 400;
     color: #7df9ff;
+    /* Afegit: Flex per alinear la temperatura i la descripció */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* NOU ESTIL: Per a la descripció meteorològica (Mida de la font a la meitat de la temperatura) */
+.meteo-descripcio {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #a9c2d6;
 }
 
 /* Eliminem els estils de comptadors */
@@ -131,10 +144,23 @@ h2 { /* Estil per al nom de la ciutat */
     }
 
     #rellotge, #rellotgeVic {
-        font-size: 2.5rem;
+        /* Mantenim una mida fixa gran per a mòbils per evitar que l'escala de vw sigui massa petita */
+        font-size: 5.0rem;
     }
 
     #data, #dataVic {
         font-size: 1.2rem;
+    }
+
+    #temperatura, #temperaturaVic {
+        /* Assegurar la disposició flexible al mòbil */
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .meteo-descripcio {
+        /* Mantenir la proporció */
+        font-size: 0.7rem;
     }
 }

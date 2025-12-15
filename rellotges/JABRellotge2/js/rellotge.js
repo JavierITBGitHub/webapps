@@ -1,3 +1,5 @@
+// JABRellotge2.zip/JABRellotge2/js/rellotge.js
+
 // --- Configuració de Localitzacions ---
 const BARCELONA = {
     LAT: 41.3888,
@@ -44,8 +46,9 @@ async function getTemperatura(loc) {
         const code = dades.current.weather_code;
         const descripcio = getWeatherDescription(code);
 
-        document.getElementById(loc.IDS.temperatura).textContent =
-            `${temp} ºC  ${descripcio}`;
+        // MODIFICAT: Afegim un espai en blanc (&nbsp;) abans de l'etiqueta <span> per separar la descripció de la temperatura.
+        document.getElementById(loc.IDS.temperatura).innerHTML =
+            `${temp} ºC &nbsp;<span class="meteo-descripcio">${descripcio}</span>`;
 
     } catch (error) {
         console.error(`Error obtenint la temperatura per (${loc.LAT}, ${loc.LON}):`, error);
