@@ -18,7 +18,7 @@
   --reflection-opacity: 0.5;
   --glossy-opacity: 0.3;
   --hour-number-opacity: 1;
-  --hour-number-color: rgba(50, 50, 50, 0.9);
+  --hour-number-color: rgba(0, 65, 255, 1); /*rgba(50, 50, 50, 0.9);*/
   --minute-marker-color: rgba(80, 80, 80, 0.5);
   --hand-color: rgba(50, 50, 50, 0.9);
   --second-hand-color: rgba(0, 65, 255, 1);  /*rgb(0,64,255) ITB*/ /*rgba(255, 107, 0, 1)*/
@@ -456,7 +456,7 @@ body {
   position: absolute;
   font-size: 12px;
   font-weight: 400;
-  color: rgba(50, 50, 50, 0.8);
+  color: rgba(0, 65, 255, 1); /*rgba(50, 50, 50, 0.8);*/
   text-align: center;
   width: 140px;
   height: auto;
