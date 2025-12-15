@@ -82,7 +82,16 @@ h1 {
     margin-top: 6px;
     font-size: 1.1rem;
     color: #a9c2d6;
+    margin-bottom: 10px; /* Afegim espai abans de la temperatura */
+
 }
+/* NOU ESTIL PER A LA TEMPERATURA */
+#temperatura {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #7df9ff; /* Un color similar però menys dominant */
+}
+
 
 /* Comptadors */
 #comptadorNadal {
