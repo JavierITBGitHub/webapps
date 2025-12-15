@@ -63,6 +63,31 @@ function actualitzaRellotge() {
         getTemperaturaBarcelona();
     }
 }
+function actualitzaRellotge24h() {
+    const ara = new Date();
+
+    // Utilitzem toLocaleTimeString per obtenir el format 24h complet (hh:mm:ss)
+    const opcionsHora = {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false // Forcem el format 24 hores
+    };
+
+    const horaCompleta24h = ara.toLocaleTimeString('ca-ES', opcionsHora);
+
+    document.getElementById("rellotge").textContent = horaCompleta24h;
+
+    const opcionsData = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById("data").textContent =
+        ara.toLocaleDateString('ca-ES', opcionsData);
+
+    actualitzaComptadors(ara);
+      // Météo: Refrescar si han passat 10 minuts
+    if (ara.getTime() - lastWeatherFetch > CACHE_DURATION) {
+        getTemperaturaBarcelona();
+    }
+}
 
 function actualitzaComptadors(ara) {
     // Càlcul de Nadal
@@ -99,5 +124,5 @@ function actualitzaComptadors(ara) {
     // ---------------------------------------------
 }
 
-setInterval(actualitzaRellotge, 1000); //
-actualitzaRellotge(); //
+setInterval(actualitzaRellotge24h, 1000); //
+actualitzaRellotge24h(); //
