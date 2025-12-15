@@ -1,0 +1,140 @@
+/* ------------------------------
+   Dashboard corporatiu ITB (Mode Clàssic amb 2 Rellotges)
+--------------------------------*/
+
+body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #0a2540, #020d1f);
+    color: #e6f1ff;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+#logoITB {
+    height: 60px;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h2 { /* Estil per al nom de la ciutat */
+    font-size: 1.5rem;
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #7df9ff;
+}
+
+/* Dashboard */
+#dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    padding: 0 10px;
+}
+
+/* Targetes corporatives */
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 12px;
+    padding: 20px 25px;
+    min-width: 220px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    animation: glow 3s infinite alternate;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+}
+
+/* Rellotge i data */
+#rellotge, #rellotgeVic {
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #00e5ff;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+    line-height: 1.1;
+}
+
+#data, #dataVic {
+    margin-top: 6px;
+    font-size: 1.1rem;
+    color: #a9c2d6;
+    margin-bottom: 10px;
+}
+
+/* Estil per a la temperatura */
+#temperatura, #temperaturaVic {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #7df9ff;
+}
+
+/* Eliminem els estils de comptadors */
+/* #comptadorNadal i #comptadorSantJoan no tenen estils específics */
+
+/* Footer */
+.footer-source {
+    margin-top: 3rem;
+    font-size: 0.75rem;
+    opacity: 0.75;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 15px rgba(0,229,255,0.1); }
+    50% { box-shadow: 0 0 25px rgba(0,229,255,0.2); }
+    100% { box-shadow: 0 0 15px rgba(0,229,255,0.1); }
+}
+
+/* ------------------------------
+   Responsive (Mòbils)
+--------------------------------*/
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer-source {
+        font-size: 0.6rem;
+        opacity: 0.75;
+    }
+    #logoITB {
+        height: 50px;
+    }
+    h1 {
+        font-size: 1.8rem;
+        margin-top: 10px;
+    }
+    #dashboard {
+        flex-direction: column;
+        padding: 0 5%;
+        gap: 15px;
+    }
+    .card {
+        min-width: 90%;
+    }
+
+    #rellotge, #rellotgeVic {
+        font-size: 2.5rem;
+    }
+
+    #data, #dataVic {
+        font-size: 1.2rem;
+    }
+}
