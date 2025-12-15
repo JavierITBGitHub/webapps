@@ -1,0 +1,97 @@
+/* ------------------------------
+   Dashboard corporatiu ITB (Mode Rellotge Full-Screen)
+--------------------------------*/
+
+body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #0a2540, #020d1f);
+    color: #e6f1ff;
+    margin: 0;
+    padding: 0;
+    /* Nou: Ocupa tota l'alçada de la vista (viewport) */
+    height: 100vh;
+    display: flex; /* Utilitzem Flexbox per centrar el contingut */
+    justify-content: center; /* Centrar horitzontalment */
+    align-items: center; /* Centrar verticalment */
+    text-align: center;
+    overflow: hidden; /* Evitem barres de desplaçament */
+}
+
+/* Dashboard esdevé el contenidor principal (ocupa tota la pantalla) */
+#dashboard {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+/* La targeta del rellotge ocupa tota la pantalla i utilitza Flexbox */
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 0; /* Eliminem el radi de la cantonada */
+    padding: 0; /* Eliminem el padding */
+    min-width: 100%; /* Ocupa tota l'amplada */
+    height: 100%; /* Ocupa tota l'alçada */
+    box-shadow: none; /* Eliminem l'ombra */
+
+    /* Configuració per maximitzar l'hora */
+    display: flex;
+    flex-direction: column; /* Columna per apilar rellotge, data i temperatura */
+    justify-content: center; /* Centrem verticalment el contingut */
+    align-items: center; /* Centrem horitzontalment el contingut */
+    transition: none; /* Eliminem la transició de hover */
+    animation: none; /* Eliminem l'animació de resplendor */
+}
+
+.card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Rellotge i data */
+#rellotge {
+    /* Més gran (20vw) per reduir el marge horitzontal */
+    font-size: 20vw;
+    font-weight: 700;
+    color: #00e5ff;
+    text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+    line-height: 1;
+    margin-bottom: 0.05em;
+}
+
+#data {
+    font-size: 2.5vw;
+    color: #a9c2d6;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+
+/* Estil per a la temperatura: MÉS GRAN */
+#temperatura {
+    font-size: 3vw;
+    font-weight: 400;
+    color: #7df9ff;
+}
+
+/* Eliminem tots els estils no utilitzats */
+header, .footer, .footer-source, #logoITB, h1, #comptadorNadal, #comptadorSantJoan, ul, a, @keyframes glow {
+    display: none !important;
+}
+
+/* Adaptació mòbil (ajustem les mides de font) */
+@media (max-width: 768px) {
+    #rellotge {
+        /* Més gran (35vw) per reduir el marge horitzontal */
+        font-size: 35vw;
+    }
+    #data {
+        font-size: 5vw;
+    }
+    #temperatura {
+        font-size: 5vw;
+    }
+}
