@@ -21,7 +21,7 @@
   --hour-number-color: rgba(50, 50, 50, 0.9);
   --minute-marker-color: rgba(80, 80, 80, 0.5);
   --hand-color: rgba(50, 50, 50, 0.9);
-  --second-hand-color: rgba(255, 107, 0, 1);
+  --second-hand-color: rgba(0, 65, 255, 1);  /*rgb(0,64,255) ITB*/ /*rgba(255, 107, 0, 1)*/
   --shadow-layer1-opacity: 0.1;
   --shadow-layer2-opacity: 0.1;
   --shadow-layer3-opacity: 0.1;
