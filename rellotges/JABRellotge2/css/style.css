@@ -1,5 +1,5 @@
 /* ------------------------------
-   Dashboard corporatiu ITB
+   Dashboard corporatiu ITB (Mode Clàssic amb 2 Rellotges)
 --------------------------------*/
 
 body {
@@ -19,21 +19,6 @@ header {
     margin-top: 20px;
 }
 
-/* Footer */
-.footer {
-    margin-top: 3rem;
-    text-align: center;
-    color: #666;
-}
-
-.footer p {
-    margin: 0.5rem 0;
-}
-
-.footer-source {
-    font-size: 0.75rem;
-    opacity: 0.75;
-}
 #logoITB {
     height: 60px;
 }
@@ -41,6 +26,13 @@ header {
 h1 {
     font-size: 2rem;
     font-weight: 600;
+}
+
+h2 { /* Estil per al nom de la ciutat */
+    font-size: 1.5rem;
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #7df9ff;
 }
 
 /* Dashboard */
@@ -63,6 +55,7 @@ h1 {
     text-align: center;
     box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    animation: glow 3s infinite alternate;
 }
 
 .card:hover {
@@ -71,90 +64,57 @@ h1 {
 }
 
 /* Rellotge i data */
-#rellotge {
-    font-size: 2.8rem;
+#rellotge, #rellotgeVic {
+    /* MODIFICAT: Utilitzem vw (Viewport Width) per aprofitar tot l'espai a pantalles grans */
+    font-size: 6vw;
     font-weight: 600;
     color: #00e5ff;
     text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+    line-height: 1.1;
 }
 
-#data {
+#data, #dataVic {
     margin-top: 6px;
     font-size: 1.1rem;
     color: #a9c2d6;
-    margin-bottom: 10px; /* Afegim espai abans de la temperatura */
-
+    margin-bottom: 10px;
 }
-/* NOU ESTIL PER A LA TEMPERATURA */
-#temperatura {
-    font-size: 1.2rem;
+
+/* Estil per a la temperatura */
+#temperatura, #temperaturaVic {
+    font-size: 1.5rem;
     font-weight: 400;
-    color: #7df9ff; /* Un color similar però menys dominant */
-}
-
-
-/* Comptadors */
-#comptadorNadal {
-    color: #ff6b6b;
-    border-color: rgba(255, 107, 107, 0.5);
-    box-shadow: 0 0 10px rgba(255, 107, 107, 0.2);
-}
-
-#comptadorSantJoan {
-    color: #ffd93d;
-    border-color: rgba(255, 217, 61, 0.5);
-    box-shadow: 0 0 10px rgba(255, 217, 61, 0.2);
-}
-
-/* Enllaços */
-a {
-    color: #00e5ff;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-a:hover {
-    text-decoration: underline;
     color: #7df9ff;
+    /* Afegit: Flex per alinear la temperatura i la descripció */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-ul {
-    margin-top: 30px;
+/* NOU ESTIL: Per a la descripció meteorològica (Mida de la font a la meitat de la temperatura) */
+.meteo-descripcio {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #a9c2d6;
 }
 
-/* Animació molt subtil corporativa */
+/* Eliminem els estils de comptadors */
+/* #comptadorNadal i #comptadorSantJoan no tenen estils específics */
+
+/* Footer */
+.footer-source {
+    margin-top: 3rem;
+    font-size: 0.75rem;
+    opacity: 0.75;
+}
+
 @keyframes glow {
     0% { box-shadow: 0 0 15px rgba(0,229,255,0.1); }
     50% { box-shadow: 0 0 25px rgba(0,229,255,0.2); }
     100% { box-shadow: 0 0 15px rgba(0,229,255,0.1); }
 }
 
-.card {
-    animation: glow 3s infinite alternate;
-}
-/* Llista d’index centrada, text alineat a l’esquerra, sense punts */
-ul {
-    list-style: none;       /* elimina els punts */
-    padding: 0;             /* elimina padding per defecte */
-    margin: 30px auto;      /* centra la llista al dashboard */
-    max-width: 400px;       /* amplada màxima */
-    text-align: left;       /* text alineat a l’esquerra */
-}
-
-ul li {
-    margin: 8px 0;          /* espai entre elements */
-}
-
-ul li a {
-    display: block;         /* per fer clic a tota la línia */
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background 0.3s;
-}
-
-ul li a:hover {
-    background: rgba(0, 229, 255, 0.1); /* efecte subtil hover */
-}
 /* ------------------------------
    Responsive (Mòbils)
 --------------------------------*/
@@ -183,16 +143,24 @@ ul li a:hover {
         min-width: 90%;
     }
 
-    #rellotge {
-        font-size: 2.5rem;
+    #rellotge, #rellotgeVic {
+        /* Mantenim una mida fixa gran per a mòbils per evitar que l'escala de vw sigui massa petita */
+        font-size: 5.0rem;
     }
 
-    #data {
+    #data, #dataVic {
         font-size: 1.2rem;
     }
 
-    nav {
-        margin: 20px auto;
-        max-width: 300px;
+    #temperatura, #temperaturaVic {
+        /* Assegurar la disposició flexible al mòbil */
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .meteo-descripcio {
+        /* Mantenir la proporció */
+        font-size: 0.7rem;
     }
 }

@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
   startClock();
   // Add keyboard shortcut to toggle Tweakpane visibility
   document.addEventListener("keydown", function (event) {
-    if (event.key === "h" || event.key === "H") {
+    if (event.key === "c" || event.key === "C") {
       const tweakpaneContainer = document.getElementById("tweakpane-container");
       if (tweakpaneContainer) {
         tweakpaneContainer.style.display =
