@@ -53,7 +53,5 @@ Concept & Design: JABITXU.
 
 Development Partners: This project was refined and optimized with the assistance of ChatGPT and Gemini.
 
-Assets: Inspired by modern analog clock designs.
-
 ### 📝 License
 This project is open-source. Feel free to fork, modify, and use it for your own creative clock projects!
