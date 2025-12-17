@@ -216,3 +216,6 @@ __marimo__/
 /.idea/copilot.data.migration.ask2agent.xml
 /rellotges/JABRellotge.zip
 /rellotges/JABRellotge2.zip
+/.idea/copilot.data.migration.agent.xml
+/.idea/copilot.data.migration.ask.xml
+/.idea/copilot.data.migration.edit.xml
