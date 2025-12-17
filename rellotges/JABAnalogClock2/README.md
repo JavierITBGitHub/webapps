@@ -50,7 +50,9 @@ Instead of hard-coding colors, the project uses CSS Custom Properties. Switching
 * 🖼️ **`img/`** — High-quality SVG/PNG assets for branding, logos, and developer credits.
 ### 👨‍💻 Credits & Collaboration
 Concept & Design: JABITXU.
+
 Development Partners: This project was refined and optimized with the assistance of ChatGPT and Gemini.
+
 Assets: Inspired by modern analog clock designs.
 
 ### 📝 License
