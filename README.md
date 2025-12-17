@@ -1,5 +1,5 @@
 ## Don't worry be Javi 👋
-![Javi](octoCatDive.jpeg) 
+![Javi](JAB_trencadis_blau.png) 
 
 - 🌱 I’m currently learning ... all
   
