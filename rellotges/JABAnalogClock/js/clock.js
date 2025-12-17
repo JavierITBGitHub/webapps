@@ -1,5 +1,3 @@
-// Just noticed accessing localStorage is banned from codepen, so disabling saving theme to localStorage
-
 const deg = 6;
 const hour = document.querySelector(".hour");
 const min = document.querySelector(".min");
@@ -16,33 +14,23 @@ const setClock = () => {
 	sec.style.transform = `rotateZ(${ss}deg)`;
 };
 
-// first time
 setClock();
-// Update every 1000 ms
 setInterval(setClock, 1000);
 
+// Control del Switch de Tema
+const themeToggle = document.querySelector("#theme-toggle");
+
 const switchTheme = (evt) => {
-	const switchBtn = evt.target;
-	if (switchBtn.textContent.toLowerCase() === "light") {
-		switchBtn.textContent = "dark";
-		// localStorage.setItem("theme", "dark");
+	if (evt.target.checked) {
 		document.documentElement.setAttribute("data-theme", "dark");
 	} else {
-		switchBtn.textContent = "light";
-		// localStorage.setItem("theme", "light"); //add this
 		document.documentElement.setAttribute("data-theme", "light");
 	}
 };
 
-const switchModeBtn = document.querySelector(".switch-btn");
-switchModeBtn.addEventListener("click", switchTheme, false);
+themeToggle.addEventListener("change", switchTheme, false);
 
+// Configuració inicial (Dark Mode)
 let currentTheme = "dark";
-// currentTheme = localStorage.getItem("theme")
-// 	? localStorage.getItem("theme")
-// 	: null;
-
-if (currentTheme) {
-	document.documentElement.setAttribute("data-theme", currentTheme);
-	switchModeBtn.textContent = currentTheme;
-}
+document.documentElement.setAttribute("data-theme", currentTheme);
+themeToggle.checked = (currentTheme === "dark");
