@@ -1,0 +1,151 @@
+:root {
+    --main-bg-color: #ffffff;
+    --main-text-color: #888888;
+    --accent-color: #f00;
+}
+
+[data-theme="dark"] {
+    --main-bg-color: #1e1f26;
+    --main-text-color: #cccccc;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--main-bg-color);
+    transition: background-color 0.3s ease;
+    overflow: hidden;
+}
+
+/* Header: Títol sempre centrat */
+.page-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+}
+
+.header-spacer, .switch-cont {
+    flex: 1; /* Ocupen el mateix espai als costats */
+}
+
+.switch-cont {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.header-title {
+    flex: 2; /* El títol té prioritat central */
+    text-align: center;
+    color: var(--main-text-color);
+    font-family: monospace;
+    letter-spacing: 4px;
+    font-size: clamp(0.7rem, 2.5vw, 1.1rem);
+    text-transform: uppercase;
+}
+
+/* El Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 1px solid var(--main-text-color);
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px; width: 14px;
+    left: 4px; bottom: 3px;
+    background-color: var(--main-text-color);
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* Rellotge adaptatiu */
+.clock-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.clock {
+    width: 75vmin; /* 75% del costat més petit de la pantalla */
+    height: 75vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--main-bg-color);
+    background-image: url("https://imvpn22.github.io/analog-clock/clock.png");
+    background-position: center;
+    background-size: cover;
+    border-radius: 50%;
+    border: 4px solid var(--main-bg-color);
+    box-shadow: 0 -10px 20px rgba(255, 255, 255, 0.05),
+                inset 0 -10px 20px rgba(255, 255, 255, 0.05),
+                0 10px 20px rgba(0, 0, 0, 0.3),
+                inset 0 10px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.clock:before {
+    content: "";
+    height: 3vmin; width: 3vmin;
+    background-color: var(--main-text-color);
+    position: absolute;
+    border-radius: 50%;
+    z-index: 1000;
+}
+
+/* Agulles */
+.hour, .min, .sec { position: absolute; display: flex; justify-content: center; }
+
+.hour { height: 35vmin; width: 35vmin; }
+.hour:before { content: ""; position: absolute; height: 50%; width: 1.5vmin; background-color: var(--main-text-color); border-radius: 6px; }
+
+.min { height: 50vmin; width: 50vmin; }
+.min:before { content: ""; height: 50%; width: 1vmin; background-color: var(--main-text-color); border-radius: 4px; }
+
+.sec { height: 55vmin; width: 55vmin; }
+.sec:before { content: ""; height: 60%; width: 0.5vmin; background-color: var(--accent-color); border-radius: 2px; }
+
+/* Footer */
+.footer-source {
+    padding-bottom: 2rem;
+    font-family: monospace;
+    font-size: clamp(0.5rem, 1.5vw, 0.7rem);
+    color: var(--main-text-color);
+    text-align: center;
+}
+
+.footer-source img {
+    vertical-align: middle;
+    margin: 0 4px;
+}
