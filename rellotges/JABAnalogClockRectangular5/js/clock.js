@@ -6,20 +6,20 @@ const tempEl = document.getElementById('temp');
 const dateEl = document.getElementById('date');
 
 /* ─────────────────────────────
-   GEOMETRIA EL·LÍPTICA COMUNA
+   GEOMETRIA EL·LÍPTICA AL LÍMIT
 ───────────────────────────── */
 
 const GEOM = {
-    marks:   { x: 40,  y: 60  },
-    numbers: { x: 70,  y: 110 },
+    marks:   { x: 8,  y: 8  },
+    numbers: { x: 35, y: 35 },
     hands: [
-        { x: 130, y: 200 }, // hores
-        { x: 105, y: 175 }, // minuts
-        { x: 90,  y: 160 }  // segons
+        { x: 40, y: 60 },  // hores
+        { x: 30, y: 45 },  // minuts
+        { x: 20, y: 30 }   // segons
     ]
 };
 
-// ─────── UTILITAT EL·LÍPTICA ───────
+// Distància radial sobre una el·lipse real
 function ellipseDist(sin, cos, a, b) {
     return (a * b) / Math.sqrt(
         (b * sin) * (b * sin) +
@@ -40,7 +40,7 @@ async function fetchWeather() {
     }
 }
 
-// ─────── DIBUIX CARA ───────
+// ─────── CARA DEL RELLOTGE ───────
 function drawFace() {
     document.querySelectorAll('.num, .mark').forEach(e => e.remove());
 
@@ -121,10 +121,6 @@ function update() {
     dateEl.innerText = `${dies[now.getDay()]} ${now.getDate()}`;
 }
 
-// ─────── EVENTS ───────
-document.getElementById('theme-toggle').onclick = e =>
-    document.body.setAttribute('data-theme', e.target.checked ? 'dark' : 'light');
-
 window.onresize = () => { drawFace(); update(); };
 
 drawFace();
@@ -132,3 +128,25 @@ update();
 fetchWeather();
 setInterval(update, 1000);
 setInterval(fetchWeather, 600000);
+/* ─────────────────────────────
+   FULLSCREEN (doble toc / clic)
+───────────────────────────── */
+
+let lastTap = 0;
+
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+clock.addEventListener('click', () => {
+    const now = Date.now();
+    if (now - lastTap < 300) {
+        toggleFullscreen();
+    }
+    lastTap = now;
+});
+
