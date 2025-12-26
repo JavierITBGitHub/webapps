@@ -1,0 +1,135 @@
+:root {
+    --main-bg-color: #ffffff;
+    --main-text-color: #222222;
+    --accent-color: #ff0000;
+}
+
+[data-theme="dark"] {
+    --main-bg-color: #000000;
+    --main-text-color: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--main-bg-color);
+    transition: background-color 0.3s ease;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+/* MARCA DE LUXE JABitxu */
+.brand {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Times New Roman", Times, serif;
+    text-transform: uppercase;
+    letter-spacing: 7px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--main-text-color);
+    opacity: 0.5;
+    z-index: 1;
+}
+
+/* Interruptor flotant */
+.theme-wrapper {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    opacity: 0.5;
+}
+
+.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; border: 1px solid var(--main-text-color); border-radius: 20px; transition: 0.4s; }
+.slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: var(--main-text-color); border-radius: 50%; transition: 0.4s; }
+input:checked + .slider:before { transform: translateX(20px); }
+
+.clock-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.clock {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.number {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--main-text-color);
+    z-index: 1;
+}
+
+/* PUNT CENTRAL CORREGIT */
+.clock:before {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    /* Fem servir marges negatius de la meitat de la mida (14/2 = 7) */
+    margin-left: -7px;
+    margin-top: -7px;
+    z-index: 100;
+}
+
+/* MANETES CORREGIDES */
+.hour, .min, .sec {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+}
+
+/* Hour: 10px ample -> margin-left -5px */
+.hour {
+    height: 25vh;
+    width: 10px;
+    background: var(--main-text-color);
+    margin-top: -25vh;
+    margin-left: -5px;
+    border-radius: 5px;
+    z-index: 5;
+}
+
+/* Min: 6px ample -> margin-left -3px */
+.min {
+    height: 38vh;
+    width: 6px;
+    background: var(--main-text-color);
+    margin-top: -38vh;
+    margin-left: -3px;
+    border-radius: 3px;
+    z-index: 4;
+}
+
+/* Sec: 2px ample -> margin-left -1px */
+.sec {
+    height: 43vh;
+    width: 2px;
+    background: var(--accent-color);
+    margin-top: -43vh;
+    margin-left: -1px;
+    z-index: 6;
+}

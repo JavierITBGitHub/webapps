@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>JABitxu Fullscreen Clock</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Interruptor de tema flotant -->
+    <div class="theme-wrapper">
+        <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <main class="clock-container">
+        <div class="clock" id="clock">
+            <!-- MARCA DE LUXE -->
+            <div class="brand">JABitxu</div>
+
+            <!-- Els números es generen aquí -->
+            <div class="hour"></div>
+            <div class="min"></div>
+            <div class="sec"></div>
+        </div>
+    </main>
+
+    <script src="js/clock.js"></script>
+</body>
+</html>
