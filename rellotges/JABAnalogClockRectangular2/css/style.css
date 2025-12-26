@@ -19,10 +19,10 @@ body {
     font-family: sans-serif;
 }
 
-/* Marca superior */
+/* Marca superior JABitxu */
 .brand {
     position: absolute;
-    top: 35%;
+    top: 30%; /* Una mica més amunt */
     left: 50%;
     transform: translateX(-50%);
     font-family: "Times New Roman", Times, serif;
@@ -35,18 +35,35 @@ body {
     z-index: 1;
 }
 
-/* Temperatura inferior */
+/* Temperatura (Mida igual als números) */
 .weather {
     position: absolute;
-    top: 65%;
+    top: 70%; /* Una mica més avall */
     left: 50%;
     transform: translateX(-50%);
-    font-family: monospace;
-    letter-spacing: 2px;
-    font-size: 1.1rem;
+    /* IGUAL QUE ELS NÚMEROS: */
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -1px; /* Perquè no ocupi massa amplada */
     color: var(--main-text-color);
-    opacity: 0.6;
+    opacity: 0.4;
     z-index: 1;
+}
+
+/* Estil de les marques (ratlles) */
+.marker {
+    position: absolute;
+    background-color: var(--main-text-color);
+    width: 2px;
+    height: 10px;
+    opacity: 0.3;
+    z-index: 0;
+}
+
+.marker.hour-mark {
+    width: 4px;
+    height: 20px;
+    opacity: 0.8;
 }
 
 /* Switch */
@@ -67,7 +84,6 @@ input:checked + .slider:before { transform: translateX(20px); }
     color: var(--main-text-color); z-index: 1;
 }
 
-/* Punt central corregit */
 .clock:before {
     content: ""; position: absolute;
     width: 14px; height: 14px;
@@ -78,7 +94,6 @@ input:checked + .slider:before { transform: translateX(20px); }
     z-index: 100;
 }
 
-/* Manetes corregides */
 .hour, .min, .sec { position: absolute; top: 50%; left: 50%; transform-origin: bottom center; }
 .hour { height: 25vh; width: 10px; background: var(--main-text-color); margin-top: -25vh; margin-left: -5px; border-radius: 5px; z-index: 5; }
 .min  { height: 38vh; width: 6px; background: var(--main-text-color); margin-top: -38vh; margin-left: -3px; border-radius: 3px; z-index: 4; }

@@ -4,7 +4,6 @@ const secHand = document.querySelector(".sec");
 const clock = document.getElementById("clock");
 const tempElement = document.getElementById("temp");
 
-// Funció per obtenir la temperatura de Seva
 async function getWeather() {
     try {
         const lat = 41.837;
@@ -14,24 +13,50 @@ async function getWeather() {
         const temp = Math.round(data.current_weather.temperature);
         tempElement.innerText = `${temp}°C`;
     } catch (error) {
-        console.error("Error obtenint el temps:", error);
         tempElement.innerText = "N/A";
     }
 }
 
-const placeNumbers = () => {
-    document.querySelectorAll('.number').forEach(n => n.remove());
+const buildClockFace = () => {
+    // Netegem números i marques previs
+    document.querySelectorAll('.number, .marker').forEach(el => el.remove());
+
     const w = window.innerWidth / 2;
     const h = window.innerHeight / 2;
-    const paddingX = 40;
-    const paddingY = 50;
+
+    // 1. DIBUIXAR LES 60 RATLLES (MARQUES)
+    const markerPaddingX = 15; // Molt a prop de la vora
+    const markerPaddingY = 15;
+
+    for (let i = 0; i < 60; i++) {
+        const angle = (i * 6) * (Math.PI / 180);
+        const sin = Math.sin(angle);
+        const cos = -Math.cos(angle);
+
+        const scale = Math.min((w - markerPaddingX) / Math.abs(sin), (h - markerPaddingY) / Math.abs(cos));
+        const x = w + sin * scale;
+        const y = h + cos * scale;
+
+        const mark = document.createElement("div");
+        mark.className = (i % 5 === 0) ? "marker hour-mark" : "marker";
+        mark.style.left = `${x}px`;
+        mark.style.top = `${y}px`;
+
+        // Rotem la ratlla perquè apunti al centre
+        mark.style.transform = `translate(-50%, -50%) rotate(${i * 6}deg)`;
+        clock.appendChild(mark);
+    }
+
+    // 2. DIBUIXAR ELS 12 NÚMEROS
+    const numPaddingX = 65; // Més cap a l'interior per no tapar ratlles
+    const numPaddingY = 85;
 
     for (let i = 1; i <= 12; i++) {
         const angle = (i * 30) * (Math.PI / 180);
         const sin = Math.sin(angle);
         const cos = -Math.cos(angle);
 
-        const scale = Math.min((w - paddingX) / Math.abs(sin), (h - paddingY) / Math.abs(cos));
+        const scale = Math.min((w - numPaddingX) / Math.abs(sin), (h - numPaddingY) / Math.abs(cos));
         const x = w + sin * scale;
         const y = h + cos * scale;
 
@@ -59,7 +84,6 @@ const updateClock = () => {
     hourHand.style.transform = `rotate(${hDeg}deg)`;
 };
 
-// Gestió de Tema
 const themeToggle = document.querySelector("#theme-toggle");
 themeToggle.addEventListener("change", (e) => {
     const theme = e.target.checked ? "dark" : "light";
@@ -71,12 +95,11 @@ const savedTheme = localStorage.getItem("jab-theme") || "dark";
 document.documentElement.setAttribute("data-theme", savedTheme);
 themeToggle.checked = (savedTheme === "dark");
 
-window.addEventListener('resize', placeNumbers);
+window.addEventListener('resize', buildClockFace);
 
-// Inicialització
-placeNumbers();
+buildClockFace();
 updateClock();
 getWeather();
 
 setInterval(updateClock, 1000);
-setInterval(getWeather, 900000); // Actualitza el temps cada 15 minuts
+setInterval(getWeather, 900000);
