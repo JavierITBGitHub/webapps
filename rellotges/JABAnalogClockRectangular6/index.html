@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>JABitxu Clock</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<svg id="clock-svg"
+     viewBox="-500 -500 1000 1000"
+     preserveAspectRatio="xMidYMid meet">
+
+    <!-- DEFINICIONS -->
+    <defs>
+        <filter id="minuteGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- MARQUES -->
+    <g id="marks"></g>
+
+    <!-- NÚMEROS -->
+    <g id="numbers"></g>
+
+    <!-- TEXTOS -->
+    <text id="brand" y="-120">JABitxu</text>
+    <text id="temp" y="180">--°C</text>
+    <text id="date" y="240">----</text>
+
+    <!-- MANETES -->
+    <line id="h-hand"/>
+    <line id="m-hand"/>
+    <line id="s-hand"/>
+
+    <!-- CENTRE -->
+    <circle cx="0" cy="0" r="6" fill="var(--accent)"/>
+
+</svg>
+
+<script src="js/clock.js"></script>
+</body>
+</html>
