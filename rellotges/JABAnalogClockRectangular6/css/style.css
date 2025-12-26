@@ -18,7 +18,7 @@ html, body {
     background: var(--bg);
 }
 
-/* ───── TEXTOS SVG ───── */
+/* Textos SVG */
 #brand,
 #temp,
 #date {
@@ -43,7 +43,7 @@ html, body {
     letter-spacing: 2px;
 }
 
-/* ───── MARQUES ───── */
+/* Marques */
 .mark {
     stroke: var(--text);
     opacity: 0.25;
@@ -64,7 +64,7 @@ html, body {
     filter: url(#minuteGlow);
 }
 
-/* ───── NÚMEROS ───── */
+/* Números */
 .number {
     fill: var(--text);
     font-size: 90px;
@@ -73,11 +73,7 @@ html, body {
     dominant-baseline: middle;
 }
 
-.number.active {
-    fill: var(--accent);
-}
-
-/* ───── MANETES ───── */
+/* Manetes */
 #h-hand {
     stroke: var(--text);
     stroke-width: 20;

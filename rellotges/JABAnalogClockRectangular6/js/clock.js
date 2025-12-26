@@ -9,7 +9,7 @@ const sHand = document.getElementById('s-hand');
 const tempEl = document.getElementById('temp');
 const dateEl = document.getElementById('date');
 
-/* ───── GEOMETRIA ───── */
+/* Geometria el·líptica */
 const RX = 480;
 const RY = 420;
 
@@ -20,7 +20,7 @@ function polar(a, rx, ry) {
     };
 }
 
-/* ───── METEO SEVA ───── */
+/* Meteo Seva */
 async function fetchWeather() {
     try {
         const res = await fetch(
@@ -34,7 +34,7 @@ async function fetchWeather() {
     }
 }
 
-/* ───── CARA ───── */
+/* Cara del rellotge */
 function drawFace() {
     for (let i = 0; i < 60; i++) {
         const a = i * 6 * Math.PI / 180;
@@ -52,6 +52,7 @@ function drawFace() {
         line.setAttribute('y2', outer.y);
         line.classList.add('mark', i % 5 === 0 ? 'major' : 'minor');
         line.dataset.minute = i;
+
         marksG.appendChild(line);
     }
 
@@ -64,16 +65,17 @@ function drawFace() {
         t.setAttribute('x', p.x);
         t.setAttribute('y', p.y);
         t.classList.add('number');
+
         numsG.appendChild(t);
     }
 }
 
-/* ───── UPDATE ───── */
-function update() {
+/* Animació contínua */
+function updateContinuous() {
     const now = new Date();
     const h = now.getHours() % 12;
     const m = now.getMinutes();
-    const s = now.getSeconds();
+    const s = now.getSeconds() + now.getMilliseconds() / 1000;
 
     const ah = (h * 30 + m * 0.5) * Math.PI / 180;
     const am = (m * 6 + s * 0.1) * Math.PI / 180;
@@ -98,22 +100,28 @@ function update() {
     sHand.setAttribute('x2', ps.x);
     sHand.setAttribute('y2', ps.y);
 
-    document.querySelectorAll('.number').forEach((n, i) =>
-        n.classList.toggle('active', i + 1 === (h || 12))
-    );
+    /* Ratlla hora + minut */
+    const hourAngleDeg = (h * 30 + m * 0.5);
+    const hourMinute = Math.round(hourAngleDeg / 6) % 60;
 
-    document.querySelectorAll('.mark').forEach(mk =>
-        mk.classList.toggle('active', +mk.dataset.minute === m)
-    );
+    document.querySelectorAll('.mark').forEach(mk => {
+        const min = +mk.dataset.minute;
+        mk.classList.toggle(
+            'active',
+            min === m || min === hourMinute
+        );
+    });
 
     const dies = [
         'Diumenge','Dilluns','Dimarts',
         'Dimecres','Dijous','Divendres','Dissabte'
     ];
     dateEl.textContent = `${dies[now.getDay()]} ${now.getDate()}`;
+
+    requestAnimationFrame(updateContinuous);
 }
 
-/* ───── FULLSCREEN ───── */
+/* Fullscreen doble toc */
 let lastTap = 0;
 svg.addEventListener('click', () => {
     const t = Date.now();
@@ -125,9 +133,8 @@ svg.addEventListener('click', () => {
     lastTap = t;
 });
 
-/* INIT */
+/* Init */
 drawFace();
-update();
 fetchWeather();
-setInterval(update, 1000);
+updateContinuous();
 setInterval(fetchWeather, 600000);
