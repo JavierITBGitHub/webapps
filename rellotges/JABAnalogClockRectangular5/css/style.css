@@ -1,0 +1,109 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg: #ffffff;
+    --text: #222222;
+    --accent: #ff0000;
+}
+
+[data-theme="dark"] {
+    --bg: #000000;
+    --text: #ffffff;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+.clock {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Textos */
+.brand {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: serif;
+    letter-spacing: 6px;
+    font-size: 1.2rem;
+    opacity: 0.5;
+}
+
+.weather {
+    position: absolute;
+    top: 68%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.2rem;
+    font-weight: 800;
+    opacity: 0.4;
+}
+
+.date-display {
+    position: absolute;
+    top: 76%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: monospace;
+    letter-spacing: 2px;
+    opacity: 0.5;
+}
+
+/* Números i marques */
+.num {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.2rem;
+    font-weight: 800;
+}
+
+.mark {
+    position: absolute;
+    background: var(--text);
+    opacity: 0.2;
+}
+
+/* Manetes */
+.hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+}
+
+.h-style { width: 10px; background: var(--text); border-radius: 5px; z-index: 5; }
+.m-style { width: 6px; background: var(--text); border-radius: 3px; z-index: 4; }
+.s-style { width: 2px; background: var(--accent); z-index: 6; }
+
+.center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+
+/* Switch */
+.theme-wrapper {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    opacity: 0.4;
+}
