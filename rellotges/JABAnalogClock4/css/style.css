@@ -1,150 +1,96 @@
 :root {
     --main-bg-color: #ffffff;
-    --main-text-color: #888888;
-    --accent-color: #f00;
+    --main-text-color: #222222;
+    --accent-color: #ff0000;
 }
 
 [data-theme="dark"] {
-    --main-bg-color: #1e1f26;
-    --main-text-color: #cccccc;
+    --main-bg-color: #000000;
+    --main-text-color: #ffffff;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    width: 100vw;
     background-color: var(--main-bg-color);
     transition: background-color 0.3s ease;
     overflow: hidden;
     font-family: sans-serif;
 }
 
-/* Header */
-.page-header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
+/* Interruptor flotant (discret) */
+.theme-wrapper {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    opacity: 0.5; /* Transparent per no molestar */
 }
 
-.header-spacer, .switch-cont { flex: 1; }
-.switch-cont { display: flex; justify-content: flex-end; }
-.header-title {
-    flex: 2;
-    text-align: center;
-    color: var(--main-text-color);
-    font-family: monospace;
-    letter-spacing: 2px;
-    font-size: clamp(0.8rem, 4vw, 1.2rem);
-    text-transform: uppercase;
-}
-
-/* Switch */
-.switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
 .switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-    border: 1px solid var(--main-text-color);
-    transition: 0.4s; border-radius: 34px;
-}
-.slider:before {
-    position: absolute; content: ""; height: 14px; width: 14px;
-    left: 4px; bottom: 3px; background-color: var(--main-text-color);
-    transition: 0.4s; border-radius: 50%;
-}
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; border: 1px solid var(--main-text-color); border-radius: 20px; transition: 0.4s; }
+.slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: var(--main-text-color); border-radius: 50%; transition: 0.4s; }
 input:checked + .slider:before { transform: translateX(20px); }
 
-/* Rellotge Rectangular */
+/* Rellotge a tota pantalla */
 .clock-container {
-    flex-grow: 1;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    padding: 10px;
 }
 
 .clock {
-    width: 90vw; /* Una mica més ample per allotjar els números grans */
-    height: 65vh;
-    max-width: 450px;
-    max-height: 700px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: var(--main-bg-color);
+    /* SENSE BORDES */
+}
+
+/* Números un 25% més grans i estilitzats */
+.number {
+    position: absolute;
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--main-bg-color);
-    border-radius: 40px;
-    border: 4px solid var(--main-bg-color);
-    box-shadow: 0 -10px 20px rgba(255, 255, 255, 0.05),
-                inset 0 -10px 20px rgba(255, 255, 255, 0.05),
-                0 10px 20px rgba(0, 0, 0, 0.3),
-                inset 0 10px 20px rgba(0, 0, 0, 0.3);
-    position: relative;
-    overflow: hidden; /* Important perquè els números no surtin del rectangle */
+    font-size: 2.2rem; /* Augmentat */
+    font-weight: 800;
+    color: var(--main-text-color);
+    z-index: 1;
 }
 
-/* Números (Imatge) - Augmentat un 25% */
-.clock::after {
-    content: "";
-    position: absolute;
-    /* Passem de 90% a 115% per fer els números un 25% més grans */
-    width: 115%;
-    height: 115%;
-    background-image: url("https://imvpn22.github.io/analog-clock/clock.png");
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    filter: grayscale(1) invert(0.4) brightness(1.2);
-    opacity: 0.7;
-    z-index: 0;
-}
-
-[data-theme="dark"] .clock::after {
-    filter: grayscale(1) invert(0.8) brightness(1.5);
-    opacity: 0.9;
-}
-
+/* Punt central */
 .clock:before {
     content: "";
-    height: 12px; width: 12px;
-    background-color: var(--main-text-color);
     position: absolute;
+    width: 14px;
+    height: 14px;
+    background: var(--accent-color);
     border-radius: 50%;
-    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
 }
 
-/* Agulles - Ajustades per als números més grans */
+/* Agulles adaptades al tamany de la pantalla */
 .hour, .min, .sec {
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: bottom center;
     display: flex;
     justify-content: center;
-    z-index: 10;
 }
 
-.hour { height: 28vh; width: 28vh; }
-.hour:before { content: ""; position: absolute; height: 50%; width: 7px; background-color: var(--main-text-color); border-radius: 6px; }
-
-.min { height: 42vh; width: 42vh; }
-.min:before { content: ""; height: 50%; width: 5px; background-color: var(--main-text-color); border-radius: 4px; }
-
-.sec { height: 48vh; width: 48vh; }
-.sec:before { content: ""; height: 60%; width: 2px; background-color: var(--accent-color); border-radius: 2px; }
-
-/* Footer */
-.footer-source {
-    padding-bottom: 1rem;
-    font-family: monospace;
-    font-size: 0.65rem;
-    color: var(--main-text-color);
-    text-align: center;
-}
-.footer-source img { vertical-align: middle; margin: 0 2px; }
+/* Alçades calculades per no tocar les vores però ser màximes */
+.hour { height: 25vh; width: 10px; background: var(--main-text-color); margin-top: -25vh; border-radius: 5px; z-index: 5; }
+.min  { height: 38vh; width: 6px; background: var(--main-text-color); margin-top: -38vh; border-radius: 3px; z-index: 4; }
+.sec  { height: 43vh; width: 2px; background: var(--accent-color); margin-top: -43vh; z-index: 6; }
