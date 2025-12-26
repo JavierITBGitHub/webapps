@@ -17,20 +17,16 @@ const updateClock = () => {
     hour.style.transform = `rotateZ(${hDeg}deg)`;
 };
 
-// Activar rellotge cada segon
 setInterval(updateClock, 1000);
 updateClock();
 
-// Gestió de Tema (Switch)
 const themeToggle = document.querySelector("#theme-toggle");
-
 themeToggle.addEventListener("change", (e) => {
     const theme = e.target.checked ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("selected-theme", theme);
 });
 
-// Estat inicial: Preferència guardada o Dark Mode per defecte
 const savedTheme = localStorage.getItem("selected-theme") || "dark";
 document.documentElement.setAttribute("data-theme", savedTheme);
 themeToggle.checked = (savedTheme === "dark");

@@ -36,15 +36,8 @@ body {
     padding: 1rem 1.5rem;
 }
 
-.header-spacer, .switch-cont {
-    flex: 1;
-}
-
-.switch-cont {
-    display: flex;
-    justify-content: flex-end;
-}
-
+.header-spacer, .switch-cont { flex: 1; }
+.switch-cont { display: flex; justify-content: flex-end; }
 .header-title {
     flex: 2;
     text-align: center;
@@ -55,78 +48,57 @@ body {
     text-transform: uppercase;
 }
 
-/* El Switch */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 44px;
-    height: 22px;
-}
-
+/* Switch */
+.switch { position: relative; display: inline-block; width: 44px; height: 22px; }
 .switch input { opacity: 0; width: 0; height: 0; }
-
 .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
     border: 1px solid var(--main-text-color);
-    transition: 0.4s;
-    border-radius: 34px;
+    transition: 0.4s; border-radius: 34px;
 }
-
 .slider:before {
-    position: absolute;
-    content: "";
-    height: 14px; width: 14px;
-    left: 4px; bottom: 3px;
-    background-color: var(--main-text-color);
-    transition: 0.4s;
-    border-radius: 50%;
+    position: absolute; content: ""; height: 14px; width: 14px;
+    left: 4px; bottom: 3px; background-color: var(--main-text-color);
+    transition: 0.4s; border-radius: 50%;
 }
+input:checked + .slider:before { transform: translateX(20px); }
 
-input:checked + .slider:before {
-    transform: translateX(20px);
-}
-
-/* Rellotge Rectangular Adaptat */
+/* Rellotge Rectangular */
 .clock-container {
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 20px;
+    padding: 10px;
 }
 
 .clock {
-    /* Dimensions optimitzades per a 720x1280 */
-    width: 85vw;
-    height: 60vh;
-    max-width: 400px;
-    max-height: 600px;
-
+    width: 90vw; /* Una mica més ample per allotjar els números grans */
+    height: 65vh;
+    max-width: 450px;
+    max-height: 700px;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--main-bg-color);
-
-    /* Forma rectangular amb cantonades arrodonides */
     border-radius: 40px;
-
     border: 4px solid var(--main-bg-color);
     box-shadow: 0 -10px 20px rgba(255, 255, 255, 0.05),
                 inset 0 -10px 20px rgba(255, 255, 255, 0.05),
                 0 10px 20px rgba(0, 0, 0, 0.3),
                 inset 0 10px 20px rgba(0, 0, 0, 0.3);
     position: relative;
-    overflow: hidden;
+    overflow: hidden; /* Important perquè els números no surtin del rectangle */
 }
 
+/* Números (Imatge) - Augmentat un 25% */
 .clock::after {
     content: "";
     position: absolute;
-    width: 90%;
-    height: 90%;
+    /* Passem de 90% a 115% per fer els números un 25% més grans */
+    width: 115%;
+    height: 115%;
     background-image: url("https://imvpn22.github.io/analog-clock/clock.png");
     background-position: center;
     background-size: contain;
@@ -150,7 +122,7 @@ input:checked + .slider:before {
     z-index: 1000;
 }
 
-/* Agulles */
+/* Agulles - Ajustades per als números més grans */
 .hour, .min, .sec {
     position: absolute;
     display: flex;
@@ -158,27 +130,21 @@ input:checked + .slider:before {
     z-index: 10;
 }
 
-/* Mides basades en l'alçada del rellotge (vh) */
-.hour { height: 25vh; width: 25vh; }
-.hour:before { content: ""; position: absolute; height: 50%; width: 6px; background-color: var(--main-text-color); border-radius: 6px; }
+.hour { height: 28vh; width: 28vh; }
+.hour:before { content: ""; position: absolute; height: 50%; width: 7px; background-color: var(--main-text-color); border-radius: 6px; }
 
-.min { height: 38vh; width: 38vh; }
-.min:before { content: ""; height: 50%; width: 4px; background-color: var(--main-text-color); border-radius: 4px; }
+.min { height: 42vh; width: 42vh; }
+.min:before { content: ""; height: 50%; width: 5px; background-color: var(--main-text-color); border-radius: 4px; }
 
-.sec { height: 42vh; width: 42vh; }
+.sec { height: 48vh; width: 48vh; }
 .sec:before { content: ""; height: 60%; width: 2px; background-color: var(--accent-color); border-radius: 2px; }
 
 /* Footer */
 .footer-source {
-    padding-bottom: 1.5rem;
+    padding-bottom: 1rem;
     font-family: monospace;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: var(--main-text-color);
     text-align: center;
-    width: 90%;
 }
-
-.footer-source img {
-    vertical-align: middle;
-    margin: 0 2px;
-}
+.footer-source img { vertical-align: middle; margin: 0 2px; }
