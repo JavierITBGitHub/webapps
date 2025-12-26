@@ -20,13 +20,29 @@ body {
     font-family: sans-serif;
 }
 
-/* Interruptor flotant (discret) */
+/* MARCA DE LUXE JABitxu */
+.brand {
+    position: absolute;
+    top: 65%; /* Situat per sota del centre */
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Times New Roman", Times, serif; /* Font clàssica elegant */
+    text-transform: uppercase;
+    letter-spacing: 7px; /* Lletres molt separades */
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--main-text-color);
+    opacity: 0.5;
+    z-index: 1; /* Queda per sota de les manetes */
+}
+
+/* Interruptor flotant */
 .theme-wrapper {
     position: absolute;
     top: 15px;
     right: 15px;
     z-index: 1000;
-    opacity: 0.5; /* Transparent per no molestar */
+    opacity: 0.5;
 }
 
 .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
@@ -35,7 +51,6 @@ body {
 .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: var(--main-text-color); border-radius: 50%; transition: 0.4s; }
 input:checked + .slider:before { transform: translateX(20px); }
 
-/* Rellotge a tota pantalla */
 .clock-container {
     width: 100vw;
     height: 100vh;
@@ -49,10 +64,8 @@ input:checked + .slider:before { transform: translateX(20px); }
     height: 100%;
     position: relative;
     background-color: var(--main-bg-color);
-    /* SENSE BORDES */
 }
 
-/* Números un 25% més grans i estilitzats */
 .number {
     position: absolute;
     width: 60px;
@@ -60,13 +73,12 @@ input:checked + .slider:before { transform: translateX(20px); }
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2.2rem; /* Augmentat */
+    font-size: 2.2rem;
     font-weight: 800;
     color: var(--main-text-color);
     z-index: 1;
 }
 
-/* Punt central */
 .clock:before {
     content: "";
     position: absolute;
@@ -80,7 +92,6 @@ input:checked + .slider:before { transform: translateX(20px); }
     z-index: 100;
 }
 
-/* Agulles adaptades al tamany de la pantalla */
 .hour, .min, .sec {
     position: absolute;
     top: 50%;
@@ -90,7 +101,6 @@ input:checked + .slider:before { transform: translateX(20px); }
     justify-content: center;
 }
 
-/* Alçades calculades per no tocar les vores però ser màximes */
 .hour { height: 25vh; width: 10px; background: var(--main-text-color); margin-top: -25vh; border-radius: 5px; z-index: 5; }
 .min  { height: 38vh; width: 6px; background: var(--main-text-color); margin-top: -38vh; border-radius: 3px; z-index: 4; }
 .sec  { height: 43vh; width: 2px; background: var(--accent-color); margin-top: -43vh; z-index: 6; }

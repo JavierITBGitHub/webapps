@@ -4,13 +4,12 @@ const secHand = document.querySelector(".sec");
 const clock = document.getElementById("clock");
 
 const placeNumbers = () => {
-    // Netegem números previs si n'hi hagués
+    // Netegem només els números previs
     document.querySelectorAll('.number').forEach(n => n.remove());
 
     const w = window.innerWidth / 2;
     const h = window.innerHeight / 2;
 
-    // Marges perquè els números no quedin tallats a la vora del J7
     const paddingX = 40;
     const paddingY = 50;
 
@@ -19,7 +18,6 @@ const placeNumbers = () => {
         const sin = Math.sin(angle);
         const cos = -Math.cos(angle);
 
-        // Projecció rectangular (Ray-casting a caixa)
         const x_factor = sin;
         const y_factor = cos;
 
@@ -34,8 +32,8 @@ const placeNumbers = () => {
         const numDiv = document.createElement("div");
         numDiv.className = "number";
         numDiv.innerText = i;
-        numDiv.style.left = `${x - 30}px`; // Centrat (meitat de width 60px)
-        numDiv.style.top = `${y - 30}px`;  // Centrat (meitat de height 60px)
+        numDiv.style.left = `${x - 30}px`;
+        numDiv.style.top = `${y - 30}px`;
         clock.appendChild(numDiv);
     }
 };
@@ -55,7 +53,6 @@ const updateClock = () => {
     hourHand.style.transform = `rotate(${hDeg}deg)`;
 };
 
-// Gestió de Tema
 const themeToggle = document.querySelector("#theme-toggle");
 themeToggle.addEventListener("change", (e) => {
     const theme = e.target.checked ? "dark" : "light";
@@ -63,7 +60,6 @@ themeToggle.addEventListener("change", (e) => {
     localStorage.setItem("jab-theme", theme);
 });
 
-// Inicialització
 const savedTheme = localStorage.getItem("jab-theme") || "dark";
 document.documentElement.setAttribute("data-theme", savedTheme);
 themeToggle.checked = (savedTheme === "dark");
