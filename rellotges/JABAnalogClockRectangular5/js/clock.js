@@ -5,54 +5,51 @@ const sHand = document.getElementById('s-hand');
 const tempEl = document.getElementById('temp');
 const dateEl = document.getElementById('date');
 
-/* ─────────────────────────────
-   GEOMETRIA EL·LÍPTICA AL LÍMIT
-───────────────────────────── */
-
 const GEOM = {
     marks:   { x: 8,  y: 8  },
     numbers: { x: 35, y: 35 },
     hands: [
-        { x: 40, y: 60 },  // hores
-        { x: 30, y: 45 },  // minuts
-        { x: 20, y: 30 }   // segons
+        { x: 40, y: 60 },
+        { x: 30, y: 45 },
+        { x: 20, y: 30 }
     ]
 };
 
-// Distància radial sobre una el·lipse real
 function ellipseDist(sin, cos, a, b) {
-    return (a * b) / Math.sqrt(
-        (b * sin) * (b * sin) +
-        (a * cos) * (a * cos)
-    );
+    return (a * b) / Math.sqrt((b * sin) * (b * sin) + (a * cos) * (a * cos));
 }
 
-// ─────── TEMPERATURA ───────
 async function fetchWeather() {
     try {
         const res = await fetch(
             "https://api.open-meteo.com/v1/forecast?latitude=41.83&longitude=2.27&current_weather=true"
         );
         const data = await res.json();
-        tempEl.innerText = Math.round(data.current_weather.temperature) + "°C";
+        const temp = Math.round(data.current_weather.temperature);
+        tempEl.innerText = temp + "°C";
+
+        // Lògica de colors segons temperatura
+        if (temp <= 4) {
+            tempEl.style.color = "0000ff" //"#add8e6"; // Blau suau
+        } else if (temp >= 30) {
+            tempEl.style.color = "#ff7f7f"; // Vermell suau
+        } else {
+            tempEl.style.color = "var(--text)"; // Estàndard
+        }
     } catch {
         tempEl.innerText = "--°C";
     }
 }
 
-// ─────── CARA DEL RELLOTGE ───────
 function drawFace() {
     document.querySelectorAll('.num, .mark').forEach(e => e.remove());
-
     const W = window.innerWidth / 2;
     const H = window.innerHeight / 2;
 
-    // Marques
     for (let i = 0; i < 60; i++) {
         const rad = i * 6 * Math.PI / 180;
         const sin = Math.sin(rad);
         const cos = Math.cos(rad);
-
         const a = W - GEOM.marks.x;
         const b = H - GEOM.marks.y;
         const dist = ellipseDist(sin, cos, a, b);
@@ -64,16 +61,13 @@ function drawFace() {
         m.style.left = (W + sin * dist) + 'px';
         m.style.top = (H - cos * dist) + 'px';
         m.style.transform = `translate(-50%, -50%) rotate(${i * 6}deg)`;
-
         clock.appendChild(m);
     }
 
-    // Números
     for (let i = 1; i <= 12; i++) {
         const rad = i * 30 * Math.PI / 180;
         const sin = Math.sin(rad);
         const cos = Math.cos(rad);
-
         const a = W - GEOM.numbers.x;
         const b = H - GEOM.numbers.y;
         const dist = ellipseDist(sin, cos, a, b);
@@ -83,21 +77,25 @@ function drawFace() {
         n.innerText = i;
         n.style.left = (W + sin * dist - 30) + 'px';
         n.style.top = (H - cos * dist - 30) + 'px';
-
         clock.appendChild(n);
     }
 }
 
-// ─────── MANETES ───────
 function update() {
     const now = new Date();
     const W = window.innerWidth / 2;
     const H = window.innerHeight / 2;
 
+    // Moviment suau usant mil·lisegons
+    const ms = now.getMilliseconds();
+    const smoothSec = now.getSeconds() + ms / 1000;
+    const smoothMin = now.getMinutes() + smoothSec / 60;
+    const smoothHour = (now.getHours() % 12) + smoothMin / 60;
+
     const angles = [
-        (now.getHours() % 12) * 30 + now.getMinutes() * 0.5,
-        now.getMinutes() * 6 + now.getSeconds() * 0.1,
-        now.getSeconds() * 6
+        smoothHour * 30,
+        smoothMin * 6,
+        smoothSec * 6
     ];
 
     const hands = [hHand, mHand, sHand];
@@ -108,7 +106,6 @@ function update() {
         const sin = Math.abs(Math.sin(rad));
         const cos = Math.abs(Math.cos(rad));
         const g = GEOM.hands[i];
-
         const a = W - g.x;
         const b = H - g.y;
         const len = ellipseDist(sin, cos, a, b) * factors[i];
@@ -126,27 +123,22 @@ window.onresize = () => { drawFace(); update(); };
 drawFace();
 update();
 fetchWeather();
-setInterval(update, 1000);
-setInterval(fetchWeather, 600000);
-/* ─────────────────────────────
-   FULLSCREEN (doble toc / clic)
-───────────────────────────── */
+
+// Update visual cada 16ms (60fps) per al moviment suau
+setInterval(update, 16);
+
+// Update temperatura cada 15 minuts (15 * 60 * 1000ms)
+setInterval(fetchWeather, 900000);
 
 let lastTap = 0;
-
-function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-        document.exitFullscreen();
-    }
-}
-
 clock.addEventListener('click', () => {
     const now = Date.now();
     if (now - lastTap < 300) {
-        toggleFullscreen();
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+            document.exitFullscreen();
+        }
     }
     lastTap = now;
 });
-
