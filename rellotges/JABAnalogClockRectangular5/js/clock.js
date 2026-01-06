@@ -28,13 +28,13 @@ async function fetchWeather() {
         const temp = Math.round(data.current_weather.temperature);
         tempEl.innerText = temp + "°C";
 
-        // Lògica de colors segons temperatura
+        // Colors suaus i lluminosos
         if (temp <= 4) {
-            tempEl.style.color = "0000ff" //"#add8e6"; // Blau suau
+            tempEl.style.color = "#4d7cfe"; // Blau suau
         } else if (temp >= 30) {
-            tempEl.style.color = "#ff7f7f"; // Vermell suau
+            tempEl.style.color = "#ff6b6b"; // Vermell suau/coral
         } else {
-            tempEl.style.color = "var(--text)"; // Estàndard
+            tempEl.style.color = "var(--text)";
         }
     } catch {
         tempEl.innerText = "--°C";
@@ -74,6 +74,7 @@ function drawFace() {
 
         const n = document.createElement('div');
         n.className = 'num';
+        n.id = `num-${i}`;
         n.innerText = i;
         n.style.left = (W + sin * dist - 30) + 'px';
         n.style.top = (H - cos * dist - 30) + 'px';
@@ -86,18 +87,16 @@ function update() {
     const W = window.innerWidth / 2;
     const H = window.innerHeight / 2;
 
-    // Moviment suau usant mil·lisegons
     const ms = now.getMilliseconds();
+    const mins = now.getMinutes();
+    const hours = now.getHours();
+
+    // Moviment suau continu
     const smoothSec = now.getSeconds() + ms / 1000;
-    const smoothMin = now.getMinutes() + smoothSec / 60;
-    const smoothHour = (now.getHours() % 12) + smoothMin / 60;
+    const smoothMin = mins + smoothSec / 60;
+    const smoothHour = (hours % 12) + smoothMin / 60;
 
-    const angles = [
-        smoothHour * 30,
-        smoothMin * 6,
-        smoothSec * 6
-    ];
-
+    const angles = [smoothHour * 30, smoothMin * 6, smoothSec * 6];
     const hands = [hHand, mHand, sHand];
     const factors = [0.55, 0.82, 0.95];
 
@@ -114,21 +113,27 @@ function update() {
         hands[i].style.transform = `translateX(-50%) rotate(${deg}deg)`;
     });
 
+    // Lògica número de l'hora en vermell quan és l'hora en punt
+    const currentHourLabel = (hours % 12) || 12;
+    document.querySelectorAll('.num').forEach(n => {
+        if (mins === 0 && n.id === `num-${currentHourLabel}`) {
+            n.style.color = "var(--accent)";
+        } else {
+            n.style.color = "var(--text)";
+        }
+    });
+
     const dies = ['Diumenge','Dilluns','Dimarts','Dimecres','Dijous','Divendres','Dissabte'];
     dateEl.innerText = `${dies[now.getDay()]} ${now.getDate()}`;
 }
 
 window.onresize = () => { drawFace(); update(); };
-
 drawFace();
 update();
 fetchWeather();
 
-// Update visual cada 16ms (60fps) per al moviment suau
-setInterval(update, 16);
-
-// Update temperatura cada 15 minuts (15 * 60 * 1000ms)
-setInterval(fetchWeather, 900000);
+setInterval(update, 16); // 60 fps per a moviment suau
+setInterval(fetchWeather, 900000); // 15 minuts
 
 let lastTap = 0;
 clock.addEventListener('click', () => {
