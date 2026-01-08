@@ -1,0 +1,158 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+:root {
+    --bg: #000000;
+    --text: #ffffff;
+    --accent: #ff0000; /* Vermell clàssic per a segons i punt central */
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+.clock {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+.brand {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: serif;
+    letter-spacing: 6px;
+    font-size: 1.2rem;
+    opacity: 0.5;
+}
+
+.weather {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 4rem;
+    font-weight: 800;
+    opacity: 0.9;
+    transition: color 1s ease;
+}
+
+.date-display {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: monospace;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    opacity: 0.7;
+}
+
+.num {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.2rem;
+    font-weight: 800;
+    transition: color 0.5s ease;
+}
+
+.mark {
+    position: absolute;
+    background: var(--text);
+    opacity: 0.4;
+}
+
+.hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+}
+
+/* MANETA HORES: Ampla, Punta i Nervi */
+.h-style {
+    width: 14px;
+    background: var(--text);
+    border-radius: 0 0 4px 4px;
+    z-index: 5;
+}
+
+/* Nervi central de l'hora (efecte fenedura) */
+.h-style::before {
+    content: '';
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 75%;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 10;
+}
+
+/* Punta hores */
+.h-style::after {
+    content: '';
+    position: absolute;
+    top: -14px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 14px solid var(--text);
+}
+
+/* MANETA MINUTS: Punta */
+.m-style {
+    width: 8px;
+    background: var(--text);
+    border-radius: 0 0 3px 3px;
+    z-index: 4;
+}
+
+.m-style::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 12px solid var(--text);
+}
+
+.s-style { width: 2px; background: var(--accent); z-index: 7; }
+
+.center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+
+:fullscreen { cursor: none; }
+::-webkit-scrollbar { display: none; }
