@@ -9,7 +9,7 @@ var sHand = document.getElementById('s-hand');
 var tempEl = document.getElementById('temp');
 var dateEl = document.getElementById('date');
 
-/* Geometria el·líptica del rellotge adaptada a la ràtio 4:3 de la pantalla de l'iPad */
+/* Radis dinàmics globals controlats per orientació */
 var RX = 630; 
 var RY = 450; 
 
@@ -20,7 +20,39 @@ function polar(a, rx, ry) {
     };
 }
 
-/* Meteo Seva amb rangs dinàmics de color per a la temperatura */
+/* Funció adaptativa 100% compatible amb els girs i pantalles a iOS antic */
+function ajustarMidesDispositiu() {
+    var isVertical = window.orientation === 0 || window.orientation === 180;
+    
+    if (window.orientation === undefined) {
+        isVertical = window.innerHeight > window.innerWidth;
+    }
+
+    if (isVertical) {
+        // Mode Vertical (Portrait): S'estira cap amunt i avall (Proporció 3:4)
+        RX = 460; 
+        RY = 630;
+        svg.setAttribute('viewBox', '-500 -666.5 1000 1333');
+        
+        document.getElementById('brand').setAttribute('y', '-160');
+        tempEl.setAttribute('y', '220');
+        dateEl.setAttribute('y', '310');
+    } else {
+        // Mode Horitzontal (Landscape): El teu disseny rectangular complet (Proporció 4:3)
+        RX = 630; 
+        RY = 450;
+        svg.setAttribute('viewBox', '-666.5 -500 1333 1000');
+        
+        document.getElementById('brand').setAttribute('y', '-120');
+        tempEl.setAttribute('y', '180');
+        dateEl.setAttribute('y', '250');
+    }
+
+    // Redibuixa l'esfera completament recalculant els llocs exactes
+    drawFace();
+}
+
+/* Petició de Previsió de Temperatura a Seva */
 function fetchWeather() {
     fetch("https://api.open-meteo.com/v1/forecast?latitude=41.83&longitude=2.27&current_weather=true")
         .then(function(res) {
