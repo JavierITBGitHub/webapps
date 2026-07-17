@@ -85,11 +85,10 @@ function fetchWeather() {
 
 /* Dibuix de l'esfera rectangular */
 function drawFace() {
-    // Netegem les marques i números anteriors abans de redibuixar
     marksG.innerHTML = "";
     numsG.innerHTML = "";
 
-    // Dibuix de les marques el·líptiques exteriors
+    // Creació de línies horàries i de minuts
     for (var i = 0; i < 60; i++) {
         var a = i * 6 * Math.PI / 180;
         var outer = polar(a, RX, RY);
