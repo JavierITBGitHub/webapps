@@ -110,10 +110,9 @@ function drawFace() {
         marksG.appendChild(line);
     }
 
-    // Posicionament circular pur dels números perquè conservin el format original sense estirar-se
+    // Posicionament net i harmònic dels textos dels números
     for (var j = 1; j <= 12; j++) {
         var a2 = j * 30 * Math.PI / 180;
-        // Fem servir un radi proporcional uniforme perquè conservin l'alineació perfecta
         var p = polar(a2, RX - 110, RY - 105);
 
         var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -135,8 +134,8 @@ function updateContinuous() {
     var m = now.getMinutes();
     var s = now.getSeconds() + now.getMilliseconds() / 1000;
 
-    // Càlcul de graus de rotació per a les manetes de polígons fixes
-    var degH = (h * 30) + (m * 0.5);
+    // Control exacte d'angles de rotació de les estructures
+    var degH = (hRaw * 30) + (m * 0.5);
     var degM = (m * 6) + (s * 0.1);
     var degS = s * 6;
 
@@ -144,7 +143,10 @@ function updateContinuous() {
     mHandGroup.setAttribute('transform', 'rotate(' + degM + ')');
     sHand.setAttribute('transform', 'rotate(' + degS + ')');
 
-    // Il·luminació activa exclusiva del MINUT ACTUAL (S'elimina la marca de la maneta de l'hora)
+    // 1. Marca de fons de l'hora corrent en vermell (Es queda fixa durant tota l'hora)
+    var horaActualMarca = h * 5;
+    if (horaActualMarca === 60) { horaActualMarca = 0; }
+
     var allMarks = document.querySelectorAll('.mark');
     for (var k = 0; k < allMarks.length; k++) {
         var mk = allMarks[k];
@@ -179,8 +181,14 @@ function updateContinuous() {
     requestAnimationFrame(updateContinuous);
 }
 
-/* Inicialització */
-drawFace();
+/* Escoltadors i llançadors en girs de l'iPad */
+window.addEventListener('resize', ajustarMidesDispositiu);
+window.addEventListener('orientationchange', function() {
+    setTimeout(ajustarMidesDispositiu, 200); // Retard de seguretat necessari per a iOS 12
+});
+
+/* Inicialització del Rellotge */
+ajustarMidesDispositiu();
 fetchWeather();
 updateContinuous();
 setInterval(fetchWeather, 600000);
