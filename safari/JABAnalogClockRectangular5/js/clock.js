@@ -9,7 +9,7 @@ var sHand = document.getElementById('s-hand');
 var tempEl = document.getElementById('temp');
 var dateEl = document.getElementById('date');
 
-/* Radis dinàmics globals */
+/* Geometria el·líptica del rellotge adaptada a la ràtio 4:3 de la pantalla de l'iPad */
 var RX = 630; 
 var RY = 450; 
 
@@ -20,38 +20,7 @@ function polar(a, rx, ry) {
     };
 }
 
-/* Funció clau: Detecta si l'iPad està en vertical o horitzontal i recalcula l'el·lipse */
-function ajustarMidesDispositiu() {
-    var ampladaFinestra = window.innerWidth;
-    var alçadaFinestra = window.innerHeight;
-
-    if (ampladaFinestra < alçadaFinestra) {
-        // Mode Vertical (Portrait): l'el·lipse s'estira cap amunt i avall
-        RX = 460; 
-        RY = 630;
-        // Ajustem el viewBox de l'SVG dinàmicament per a la proporció vertical (3:4)
-        svg.setAttribute('viewBox', '-500 -666.5 1000 1333');
-        
-        // Reposicionem els textos al fons perquè no es trepitgin en vertical
-        document.getElementById('brand').setAttribute('y', '-160');
-        tempEl.setAttribute('y', '220');
-        dateEl.setAttribute('y', '310');
-    } else {
-        // Mode Horitzontal (Landscape): el teu mode perfecte original (4:3)
-        RX = 630; 
-        RY = 450;
-        svg.setAttribute('viewBox', '-666.5 -500 1333 1000');
-        
-        document.getElementById('brand').setAttribute('y', '-120');
-        tempEl.setAttribute('y', '180');
-        dateEl.setAttribute('y', '250');
-    }
-
-    // Cada vegada que canvia la mida, redibuixem l'esfera perquè les marques i números vagin al seu lloc real
-    drawFace();
-}
-
-/* Meteo Seva */
+/* Meteo Seva amb rangs dinàmics de color per a la temperatura */
 function fetchWeather() {
     fetch("https://api.open-meteo.com/v1/forecast?latitude=41.83&longitude=2.27&current_weather=true")
         .then(function(res) {
@@ -82,13 +51,13 @@ function fetchWeather() {
         });
 }
 
-/* Cara del rellotge */
+/* Dibuix de l'esfera rectangular */
 function drawFace() {
     // Netegem les marques i números anteriors abans de redibuixar
     marksG.innerHTML = "";
     numsG.innerHTML = "";
 
-    // Dibuix de les marques el·líptiques exteriors adaptades
+    // Dibuix de les marques el·líptiques exteriors
     for (var i = 0; i < 60; i++) {
         var a = i * 6 * Math.PI / 180;
         var outer = polar(a, RX, RY);
@@ -109,10 +78,10 @@ function drawFace() {
         marksG.appendChild(line);
     }
 
-    // Posicionament intel·ligent dels números segons la posició de l'el·lipse actual
+    // Posicionament circular pur dels números perquè conservin el format original sense estirar-se
     for (var j = 1; j <= 12; j++) {
         var a2 = j * 30 * Math.PI / 180;
-        // Restem una distància proporcional perquè els números acompanyin la vora sense sortir de la pantalla
+        // Fem servir un radi proporcional uniforme perquè conservin l'alineació perfecta
         var p = polar(a2, RX - 110, RY - 105);
 
         var t = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -120,18 +89,21 @@ function drawFace() {
         t.setAttribute('x', p.x);
         t.setAttribute('y', p.y);
         t.classList.add('number');
+        t.setAttribute('data-hour', j);
 
         numsG.appendChild(t);
     }
 }
 
-/* Animació contínua */
+/* Animació de manetes i lògica de color per a marques i hores en punt */
 function updateContinuous() {
     var now = new Date();
-    var h = now.getHours() % 12;
+    var hRaw = now.getHours() % 12;
+    var h = (hRaw === 0) ? 12 : hRaw; 
     var m = now.getMinutes();
     var s = now.getSeconds() + now.getMilliseconds() / 1000;
 
+    // Càlcul de graus de rotació per a les manetes de polígons fixes
     var degH = (h * 30) + (m * 0.5);
     var degM = (m * 6) + (s * 0.1);
     var degS = s * 6;
@@ -140,15 +112,29 @@ function updateContinuous() {
     mHandGroup.setAttribute('transform', 'rotate(' + degM + ')');
     sHand.setAttribute('transform', 'rotate(' + degS + ')');
 
+    // Il·luminació activa exclusiva del MINUT ACTUAL (S'elimina la marca de la maneta de l'hora)
     var allMarks = document.querySelectorAll('.mark');
     for (var k = 0; k < allMarks.length; k++) {
         var mk = allMarks[k];
-        var min = parseInt(mk.getAttribute('data-minute'), 10);
+        var minMark = parseInt(mk.getAttribute('data-minute'), 10);
         
-        if (min === m) {
+        if (minMark === horaActualMarca) {
             mk.classList.add('active');
         } else {
             mk.classList.remove('active');
+        }
+    }
+
+    // 2. El número sencer canvia a color vermell només a l'hora en punt per 60 segons (m === 0)
+    var allNumbers = document.querySelectorAll('.number');
+    for (var n = 0; n < allNumbers.length; n++) {
+        var numEl = allNumbers[n];
+        var numHora = parseInt(numEl.getAttribute('data-hour'), 10);
+
+        if (m === 0 && numHora === h) {
+            numEl.classList.add('active-num');
+        } else {
+            numEl.classList.remove('active-num');
         }
     }
 
@@ -161,12 +147,8 @@ function updateContinuous() {
     requestAnimationFrame(updateContinuous);
 }
 
-/* Escoltadors d'esdeveniments per quan es giri l'iPad (S'usa resize i orientationchange per a navegadors de 2018) */
-window.addEventListener('resize', ajustarMidesDispositiu);
-window.addEventListener('orientationchange', ajustarMidesDispositiu);
-
-/* Inicialització ordenada */
-ajustarMidesDispositiu(); // Primer calcula l'orientació i dibuixa la cara
+/* Inicialització */
+drawFace();
 fetchWeather();
 updateContinuous();
 setInterval(fetchWeather, 600000);
