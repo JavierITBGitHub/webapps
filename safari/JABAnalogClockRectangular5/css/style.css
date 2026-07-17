@@ -1,0 +1,118 @@
+:root {
+    --bg: #000;
+    --text: #fff;
+    --accent: #ff0000;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    background: var(--bg);
+    overflow: hidden;
+    position: fixed;
+    font-family: sans-serif;
+}
+
+#clock-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+}
+
+/* Textos SVG */
+#brand,
+#temp,
+#date {
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+#brand {
+    font-family: serif;
+    fill: var(--text);
+    font-size: 48px;
+    letter-spacing: 6px;
+    opacity: 0.5;
+}
+
+/* Format de temperatura d'estil negreta, gran i opacitat forta */
+#temp {
+    font-size: 80px; /* Incrementat de mida a estil gran 4rem equivalent */
+    font-weight: 800;
+    opacity: 0.95;
+    fill: var(--text);
+    transition: fill 1s ease;
+}
+
+/* Rangs de colors de temperatura sol·licitats */
+.temp-glaç { fill: #4a90e2 !important; }
+.temp-fred { fill: #a3d2ca !important; }
+.temp-suau { fill: #ffffff !important; }
+.temp-calor { fill: #f5a623 !important; }
+.temp-extrem { fill: #ff3b30 !important; }
+
+/* El dia un 20% més gran respecte als 32px originals (38px aproximat) */
+#date {
+    font-family: monospace;
+    fill: var(--text);
+    font-size: 38px; 
+    letter-spacing: 2px;
+    opacity: 0.7;
+}
+
+/* Marques */
+.mark {
+    stroke: var(--text);
+    opacity: 0.25;
+}
+
+.mark.major {
+    stroke-width: 6;
+    opacity: 0.4;
+}
+
+.mark.minor {
+    stroke-width: 2;
+}
+
+/* Ja NO s'il·lumina la maneta de l'hora de fons, només s'activa el minut actual */
+.mark.active {
+    stroke: var(--accent);
+    opacity: 1;
+    filter: url(#minuteGlow);
+}
+
+/* Números purs sense deformació */
+.number {
+    fill: var(--text);
+    font-size: 85px;
+    font-weight: 800;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+/* NOVES MANETES: Format polígons de rellotgeria clàssica */
+.h-hand-main {
+    fill: var(--text);
+}
+
+.h-hand-nerve {
+    stroke: rgba(0, 0, 0, 0.4);
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.m-hand-main {
+    fill: var(--text);
+}
+
+#s-hand {
+    stroke: var(--accent);
+    stroke-width: 3;
+}
