@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport corregit per a dispositius mòbils antics -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JABitxu Clock</title>
+    
+    <!-- Opcions clau per a mode pantalla sencera a l'iPad (PWA) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="JABitxu Clock">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Icona per a la pantalla d'inici (guarda-la a la teva carpeta img si la tens) -->
+    <link rel="apple-touch-icon" href="img/icona-ipad.png">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<svg id="clock-svg"
+     viewBox="-500 -500 1000 1000"
+     preserveAspectRatio="xMidYMid meet">
+
+    <defs>
+        <filter id="minuteGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- Marques -->
+    <g id="marks"></g>
+
+    <!-- Números -->
+    <g id="numbers"></g>
+
+    <!-- Textos -->
+    <text id="brand" y="-120">JABitxu</text>
+    <text id="temp" y="180">--°C</text>
+    <text id="date" y="240">----</text>
+
+    <!-- Manetes -->
+    <line id="h-hand"/>
+    <line id="m-hand"/>
+    <line id="s-hand"/>
+
+    <!-- Centre -->
+    <circle cx="0" cy="0" r="6" fill="#ff0000"/>
+
+</svg>
+
+<script src="js/clock.js"></script>
+</body>
+</html>
