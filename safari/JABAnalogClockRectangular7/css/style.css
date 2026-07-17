@@ -1,0 +1,99 @@
+:root {
+    --bg: #000;
+    --text: #fff;
+    --accent: #ff0000;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000; /* Color pla base segur */
+    background: var(--bg);
+    overflow: hidden;
+    position: fixed; /* Evita qualsevol intent de desplaçament a iOS */
+}
+
+#clock-svg {
+    /* Canviat vw/vh per posició absoluta per evitar l'error de mida de les barres a iOS vell */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+}
+
+/* Textos SVG */
+#brand,
+#temp,
+#date {
+    fill: var(--text);
+    text-anchor: middle;
+    dominant-baseline: middle;
+    opacity: 0.5;
+}
+
+#brand {
+    font-size: 48px;
+    letter-spacing: 6px;
+}
+
+#temp {
+    font-size: 56px;
+    font-weight: 700;
+}
+
+#date {
+    font-size: 32px;
+    letter-spacing: 2px;
+}
+
+/* Marques */
+.mark {
+    stroke: var(--text);
+    opacity: 0.25;
+}
+
+.mark.major {
+    stroke-width: 6;
+    opacity: 0.4;
+}
+
+.mark.minor {
+    stroke-width: 2;
+}
+
+.mark.active {
+    stroke: var(--accent);
+    opacity: 1;
+    filter: url(#minuteGlow);
+}
+
+/* Números */
+.number {
+    fill: var(--text);
+    font-size: 90px;
+    font-weight: 800;
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+/* Manetes */
+#h-hand {
+    stroke: var(--text);
+    stroke-width: 20;
+    stroke-linecap: round;
+}
+
+#m-hand {
+    stroke: var(--text);
+    stroke-width: 12;
+    stroke-linecap: round;
+}
+
+#s-hand {
+    stroke: var(--accent);
+    stroke-width: 4;
+}
