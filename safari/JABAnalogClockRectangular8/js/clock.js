@@ -87,7 +87,7 @@ function fetchWeather() {
     });
 }
 
-/* Càlcul astronòmic de la Lluna (+25% de radi, Lluna Plena neta) */
+/* Càlcul astronòmic de la Lluna (Algoritme d'alta precisió recalibrat) */
 function updateMoonPhase() {
     var now = new Date();
     var year = now.getFullYear();
@@ -95,36 +95,48 @@ function updateMoonPhase() {
     var day = now.getDate();
 
     if (month < 3) { year--; month += 12; }
-    var c = 365.25 * year;
-    var e = 30.6 * month;
-    var jd = c + e + day - 694039.09; 
-    jd /= 29.5305882; 
-    var b = parseInt(jd, 10);
-    var phase = (jd - b); // 0.0 a 1.0
+    
+    var a = Math.floor(year / 100);
+    var b = Math.floor(a / 4);
+    var c = 2 - a + b;
+    var e = Math.floor(365.25 * (year + 4716));
+    var f = Math.floor(30.6001 * (month + 1));
+    
+    var jd = c + day + e + f - 1524.5;
+    
+    var daysSinceFull = (jd - 2451549.5) % 29.53058867;
+    if (daysSinceFull < 0) daysSinceFull += 29.53058867;
+    
+    var phase = daysSinceFull / 29.53058867;
 
-    var r = 22.5; // Radi augmentat un 25%
+    var r = 22.5; // Radi un 25% més gran
     var path = "";
     var moonPhaseEl = document.getElementById('moon-phase');
 
-    if (phase < 0.03 || phase > 0.97) {
-        path = ""; // Lluna Nova
-    } 
-    else if (phase >= 0.47 && phase <= 0.53) {
-        // Lluna Plena -> Cercle blanc 100% net
+    // Pleniluni / Lluna Plena -> Cercle blanc 100% radiant
+    if (phase < 0.06 || phase > 0.94) {
         path = "M 0 " + (-r) + " A " + r + " " + r + " 0 1 1 0 " + r + " A " + r + " " + r + " 0 1 1 0 " + (-r);
     } 
-    else if (phase < 0.5) {
-        var x = r - (phase * 4 * r);
-        var sweep = x > 0 ? 1 : 0;
-        path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 1 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + sweep + " 0 " + (-r);
-    } 
-    else {
-        var x = (phase - 0.5) * 4 * r - r;
+    // Quart Minvant
+    else if (phase >= 0.06 && phase < 0.44) {
+        var x = (phase * 4 * r) - r;
         var sweep = x > 0 ? 0 : 1;
         path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 0 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + sweep + " 0 " + (-r);
+    } 
+    // Lluna Nova
+    else if (phase >= 0.44 && phase <= 0.56) {
+        path = ""; 
+    } 
+    // Quart Creixent
+    else {
+        var x = r - ((phase - 0.5) * 4 * r);
+        var sweep = x > 0 ? 1 : 0;
+        path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 1 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + sweep + " 0 " + (-r);
     }
     
-    moonPhaseEl.setAttribute('d', path);
+    if (moonPhaseEl) {
+        moonPhaseEl.setAttribute('d', path);
+    }
 }
 
 function drawFace() {
