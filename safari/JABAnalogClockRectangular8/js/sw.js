@@ -1,4 +1,4 @@
-var CACHE_NAME = 'jabitxu-clock-v4';
+var CACHE_NAME = 'jabitxu-clock-v5';
 var ASSETS_TO_CACHE = [
   '../',
   '../index.html',

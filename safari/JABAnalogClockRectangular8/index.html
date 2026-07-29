@@ -39,22 +39,22 @@
     <g id="marks"></g>
     <g id="numbers"></g>
 
-    <text id="brand" y="-120">JABitxu</text>
-    
-    <!-- Fase Lunar i Meteo -->
-    <g id="weather-group">
-        <path id="weather-icon" d="" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        <text id="temp" y="180">--°C</text>
-    </g>
-    
-    <!-- Fase Lunar SVG -->
-    <g id="moon-group" transform="translate(0, -220)">
-        <circle cx="0" cy="0" r="18" fill="#222" stroke="#444" stroke-width="1.5"/>
-        <path id="moon-phase" fill="#ffffff" opacity="0.9" d="" />
+    <!-- 1. Fase Lunar (A dalt de tot, radi 22.5) -->
+    <g id="moon-group" transform="translate(0, -200)">
+        <circle cx="0" cy="0" r="22.5" fill="#111111" stroke="#333333" stroke-width="1.5"/>
+        <path id="moon-phase" fill="#ffffff" opacity="0.95" d="" />
     </g>
 
+    <!-- 2. Nom de la marca -->
+    <text id="brand" y="-130">JABitxu</text>
+    
+    <!-- 3. Temperatura neta -->
+    <text id="temp" y="180">--°C</text>
+
+    <!-- 4. Data -->
     <text id="date" y="250">----</text>
 
+    <!-- Manetes del rellotge -->
     <g id="h-hand-group">
         <path class="h-hand-main" d="M -7 30 L -7 -230 L 0 -250 L 7 -230 L 7 30 Z" />
         <line class="h-hand-nerve" x1="0" y1="20" x2="0" y2="-220" />
