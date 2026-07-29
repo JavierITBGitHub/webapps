@@ -12,7 +12,7 @@ html, body {
     background-color: #000000;
     background: var(--bg);
     overflow: hidden;
-    position: fixed; /* Evita qualsevol desplaçament a iOS */
+    position: fixed;
     font-family: sans-serif;
 }
 
@@ -59,7 +59,7 @@ html, body {
 #date {
     font-family: monospace;
     fill: var(--text);
-    font-size: 38px; /* Un 20% més gran respecte als originals */
+    font-size: 38px;
     letter-spacing: 2px;
     opacity: 0.7;
 }
@@ -101,7 +101,7 @@ html, body {
     fill: var(--accent) !important;
 }
 
-/* Estils de les manetes construïdes amb polígons */
+/* Estils de les manetes */
 .h-hand-main {
     fill: var(--text);
 }

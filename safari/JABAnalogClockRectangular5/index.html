@@ -10,10 +10,19 @@
     <meta name="apple-mobile-web-app-title" content="JABitxu Clock">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- Icona de l'escriptori (utilitza la teva pròpia dins de la carpeta img) -->
+    <!-- Icona de l'escriptori -->
     <link rel="apple-touch-icon" href="img/icona-ipad.png">
     
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- Registre del Service Worker situat a la carpeta /js/ amb abast total -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('js/sw.js', { scope: './' });
+        });
+      }
+    </script>
 </head>
 <body>
 
@@ -42,13 +51,13 @@
     <text id="temp" y="180">--°C</text>
     <text id="date" y="250">----</text>
 
-    <!-- Maneta de les Hores: Disseny amb punta, base i fenedura central -->
+    <!-- Maneta de les Hores -->
     <g id="h-hand-group">
         <path class="h-hand-main" d="M -7 30 L -7 -230 L 0 -250 L 7 -230 L 7 30 Z" />
         <line class="h-hand-nerve" x1="0" y1="20" x2="0" y2="-220" />
     </g>
     
-    <!-- Maneta dels Minuts: Disseny estilitzat amb punta llança -->
+    <!-- Maneta dels Minuts -->
     <g id="m-hand-group">
         <polygon class="m-hand-main" points="-4,30 -4,-360 0,-385 4,-360 4,30" />
     </g>

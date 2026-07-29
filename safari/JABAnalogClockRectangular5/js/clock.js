@@ -38,7 +38,7 @@ function ajustarMidesDispositiu() {
         tempEl.setAttribute('y', '220');
         dateEl.setAttribute('y', '310');
     } else {
-        // Mode Horitzontal (Landscape): El teu disseny rectangular complet (Proporció 4:3)
+        // Mode Horitzontal (Landscape): Mode rectangular complet (Proporció 4:3)
         RX = 630; 
         RY = 450;
         svg.setAttribute('viewBox', '-666.5 -500 1333 1000');
@@ -48,47 +48,60 @@ function ajustarMidesDispositiu() {
         dateEl.setAttribute('y', '250');
     }
 
-    // Redibuixa l'esfera completament recalculant els llocs exactes
     drawFace();
 }
 
-/* Petició de Previsió de Temperatura a Seva */
+/* Meteo Seva tolerant a fallades de xarxa/offline */
 function fetchWeather() {
-    fetch("https://api.open-meteo.com/v1/forecast?latitude=41.83&longitude=2.27&current_weather=true")
-        .then(function(res) {
-            return res.json();
-        })
-        .then(function(data) {
-            if (data && data.current_weather) {
-                var t = Math.round(data.current_weather.temperature);
-                tempEl.textContent = t + "°C";
-                
-                tempEl.removeAttribute('class');
-                
-                if (t <= 0) {
-                    tempEl.classList.add('temp-glaç');
-                } else if (t > 0 && t <= 12) {
-                    tempEl.classList.add('temp-fred');
-                } else if (t > 12 && t <= 23) {
-                    tempEl.classList.add('temp-suau');
-                } else if (t > 23 && t <= 32) {
-                    tempEl.classList.add('temp-calor');
-                } else if (t > 32) {
-                    tempEl.classList.add('temp-extrem');
-                }
+    if (navigator.onLine === false) {
+        tempEl.textContent = "--°C";
+        tempEl.removeAttribute('class');
+        return;
+    }
+
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function() {
+        controller.abort();
+    }, 5000);
+
+    fetch("https://api.open-meteo.com/v1/forecast?latitude=41.83&longitude=2.27&current_weather=true", {
+        signal: controller.signal
+    })
+    .then(function(res) {
+        clearTimeout(timeoutId);
+        return res.json();
+    })
+    .then(function(data) {
+        if (data && data.current_weather) {
+            var t = Math.round(data.current_weather.temperature);
+            tempEl.textContent = t + "°C";
+            
+            tempEl.removeAttribute('class');
+            
+            if (t <= 0) {
+                tempEl.classList.add('temp-glaç');
+            } else if (t > 0 && t <= 12) {
+                tempEl.classList.add('temp-fred');
+            } else if (t > 12 && t <= 23) {
+                tempEl.classList.add('temp-suau');
+            } else if (t > 23 && t <= 32) {
+                tempEl.classList.add('temp-calor');
+            } else if (t > 32) {
+                tempEl.classList.add('temp-extrem');
             }
-        })
-        .catch(function() {
-            tempEl.textContent = "--°C";
-        });
+        }
+    })
+    .catch(function() {
+        tempEl.textContent = "--°C";
+        tempEl.removeAttribute('class');
+    });
 }
 
-/* Dibuix de l'esfera rectangular */
+/* Dibuix de l'esfera */
 function drawFace() {
     marksG.innerHTML = "";
     numsG.innerHTML = "";
 
-    // Creació de línies horàries i de minuts
     for (var i = 0; i < 60; i++) {
         var a = i * 6 * Math.PI / 180;
         var outer = polar(a, RX, RY);
@@ -109,7 +122,6 @@ function drawFace() {
         marksG.appendChild(line);
     }
 
-    // Posicionament net i harmònic dels textos dels números
     for (var j = 1; j <= 12; j++) {
         var a2 = j * 30 * Math.PI / 180;
         var p = polar(a2, RX - 110, RY - 105);
@@ -125,7 +137,7 @@ function drawFace() {
     }
 }
 
-/* Animació de manetes i lògica de color per a marques i hores en punt */
+/* Animació de manetes i colors */
 function updateContinuous() {
     var now = new Date();
     var hRaw = now.getHours() % 12;
@@ -133,7 +145,6 @@ function updateContinuous() {
     var m = now.getMinutes();
     var s = now.getSeconds() + now.getMilliseconds() / 1000;
 
-    // Control exacte d'angles de rotació de les estructures
     var degH = (hRaw * 30) + (m * 0.5);
     var degM = (m * 6) + (s * 0.1);
     var degS = s * 6;
@@ -142,7 +153,7 @@ function updateContinuous() {
     mHandGroup.setAttribute('transform', 'rotate(' + degM + ')');
     sHand.setAttribute('transform', 'rotate(' + degS + ')');
 
-    // 1. Marca de fons de l'hora corrent en vermell (Es queda fixa durant tota l'hora)
+    // 1. Marca de fons de l'hora corrent en vermell
     var horaActualMarca = h * 5;
     if (horaActualMarca === 60) { horaActualMarca = 0; }
 
@@ -158,7 +169,7 @@ function updateContinuous() {
         }
     }
 
-    // 2. El número sencer canvia a color vermell només a l'hora en punt per 60 segons (m === 0)
+    // 2. Número vermell en l'hora en punt durant 60s
     var allNumbers = document.querySelectorAll('.number');
     for (var n = 0; n < allNumbers.length; n++) {
         var numEl = allNumbers[n];
@@ -180,13 +191,19 @@ function updateContinuous() {
     requestAnimationFrame(updateContinuous);
 }
 
-/* Escoltadors i llançadors en girs de l'iPad */
+/* Esdeveniments de xarxa i orientació */
 window.addEventListener('resize', ajustarMidesDispositiu);
 window.addEventListener('orientationchange', function() {
-    setTimeout(ajustarMidesDispositiu, 200); // Retard de seguretat necessari per a iOS 12
+    setTimeout(ajustarMidesDispositiu, 200);
 });
 
-/* Inicialització del Rellotge */
+window.addEventListener('online', fetchWeather);
+window.addEventListener('offline', function() {
+    tempEl.textContent = "--°C";
+    tempEl.removeAttribute('class');
+});
+
+/* Inicialització */
 ajustarMidesDispositiu();
 fetchWeather();
 updateContinuous();
