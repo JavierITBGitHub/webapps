@@ -1,0 +1,138 @@
+:root {
+    --bg: #000000;
+    --text: #ffffff;
+    --accent: #ff0000;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    background: var(--bg);
+    overflow: hidden;
+    position: fixed;
+    font-family: sans-serif;
+    touch-action: none; /* Desactiva gestos per defecte de Safari per al control de brillantor */
+}
+
+#clock-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    transition: opacity 0.1s ease-out, filter 0.5s ease;
+}
+
+/* Mode Nit Automàtic */
+body.night-mode {
+    --text: #882222;
+    --accent: #aa0000;
+}
+
+body.night-mode #clock-svg {
+    filter: brightness(0.4);
+}
+
+/* Textos SVG */
+#brand,
+#temp,
+#date {
+    text-anchor: middle;
+    dominant-baseline: middle;
+}
+
+#brand {
+    font-family: serif;
+    fill: var(--text);
+    font-size: 48px;
+    letter-spacing: 6px;
+    opacity: 0.5;
+}
+
+#temp {
+    font-size: 80px;
+    font-weight: 800;
+    opacity: 0.95;
+    fill: var(--text);
+    transition: fill 1s ease;
+}
+
+/* Icona Meteo */
+#weather-icon {
+    color: var(--text);
+    opacity: 0.9;
+}
+
+/* Classes de colors dinàmics per a la temperatura */
+.temp-glaç { fill: #4a90e2 !important; }
+.temp-fred { fill: #a3d2ca !important; }
+.temp-suau { fill: #ffffff !important; }
+.temp-calor { fill: #f5a623 !important; }
+.temp-extrem { fill: #ff3b30 !important; }
+
+#date {
+    font-family: monospace;
+    fill: var(--text);
+    font-size: 38px;
+    letter-spacing: 2px;
+    opacity: 0.7;
+}
+
+/* Marques */
+.mark {
+    stroke: var(--text);
+    opacity: 0.25;
+}
+
+.mark.major {
+    stroke-width: 6;
+    opacity: 0.4;
+}
+
+.mark.minor {
+    stroke-width: 2;
+}
+
+.mark.active {
+    stroke: var(--accent);
+    opacity: 1;
+    filter: url(#minuteGlow);
+}
+
+/* Números */
+.number {
+    fill: var(--text);
+    font-size: 85px;
+    font-weight: 800;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    transition: fill 0.3s ease;
+}
+
+.number.active-num {
+    fill: var(--accent) !important;
+}
+
+/* Manetes */
+.h-hand-main {
+    fill: var(--text);
+}
+
+.h-hand-nerve {
+    stroke: rgba(0, 0, 0, 0.4);
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.m-hand-main {
+    fill: var(--text);
+}
+
+#s-hand {
+    stroke: var(--accent);
+    stroke-width: 3;
+}
