@@ -36,7 +36,7 @@ function ajustarMidesDispositiu() {
         document.getElementById('brand').setAttribute('y', '-220');
         tempEl.setAttribute('y', '200');
         dateEl.setAttribute('y', '280');
-        moonGroup.setAttribute('transform', 'translate(0, 360)'); // Sota de la data en vertical
+        moonGroup.setAttribute('transform', 'translate(0, 360)');
     } else {
         RX = 630; 
         RY = 450;
@@ -45,7 +45,7 @@ function ajustarMidesDispositiu() {
         document.getElementById('brand').setAttribute('y', '-180');
         tempEl.setAttribute('y', '160');
         dateEl.setAttribute('y', '230');
-        moonGroup.setAttribute('transform', 'translate(0, 300)'); // Sota de la data en horitzontal
+        moonGroup.setAttribute('transform', 'translate(0, 300)');
     }
 
     drawFace();

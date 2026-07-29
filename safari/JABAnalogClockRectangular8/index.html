@@ -10,12 +10,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <link rel="apple-touch-icon" href="img/icona-ipad.png">
-    <link rel="stylesheet" href="css/style.css?v=10">
+    <link rel="stylesheet" href="css/style.css?v=11">
 
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('js/sw.js?v=10', { scope: './' }).catch(function(){});
+          navigator.serviceWorker.register('js/sw.js?v=11', { scope: './' }).catch(function(){});
         });
       }
     </script>
@@ -39,7 +39,7 @@
     <g id="marks"></g>
     <g id="numbers"></g>
 
-    <!-- 1. Nom de la marca (a dalt de tot) -->
+    <!-- 1. Nom de la marca (a dalt) -->
     <text id="brand" y="-180">JABitxu</text>
     
     <!-- 2. Temperatura neta -->
@@ -48,12 +48,10 @@
     <!-- 3. Data -->
     <text id="date" y="230">----</text>
 
-    <!-- 4. Fase Lunar amb Cràters (UBICADA JUST A SOTA DE LA DATA) -->
+    <!-- 4. Fase Lunar amb Cràters (Sota de la data) -->
     <g id="moon-group" transform="translate(0, 300)">
-        <!-- Base blanca -->
         <circle cx="0" cy="0" r="22.5" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
         
-        <!-- Cràters subtils -->
         <g id="moon-craters" fill="#d0d0d0" opacity="0.6">
             <circle cx="-7" cy="-6" r="4.5" />
             <circle cx="6" cy="8" r="3.5" />
@@ -62,7 +60,6 @@
             <circle cx="1" cy="-12" r="2" />
         </g>
         
-        <!-- Capa d'ombra astronòmica -->
         <path id="moon-phase" fill="#111111" opacity="0.92" d="" />
     </g>
 
@@ -81,6 +78,6 @@
 
 </svg>
 
-<script src="js/clock.js?v=10"></script>
+<script src="js/clock.js?v=11"></script>
 </body>
 </html>
