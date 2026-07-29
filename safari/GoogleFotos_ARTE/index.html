@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Marc Digital</title>
+  
+  <!-- Configuració PWA per a iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Fotos">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Contenidor de diapositives */
+    #photo-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* S'adapta mantenint la proporció */
+      opacity: 0;
+      -webkit-transition: opacity 1.5s ease-in-out;
+      transition: opacity 1.5s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    /* Capa de control de brillantor per opacitat */
+    #dimmer-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      opacity: 0; /* 0 = Brillantor normal, 0.8 = Molt fosc */
+      pointer-events: none;
+      z-index: 10;
+      -webkit-transition: opacity 0.2s ease;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Missatge de càrrega */
+    #loading {
+      color: #ffffff;
+      font-size: 18px;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loading">Carregant àlbum de Google Fotos...</div>
+  <div id="photo-container"></div>
+  <div id="dimmer-layer"></div>
+
+  <script>
+    // URL de l'aplicació web generada a Google Apps Script
+    var SCRIPT_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnSzCH4pUr8nw0D2ZQl_AsAqLWOPh4byG3VRNIpU_jSNiTtLA5kdDsRy8L_bBxwUad_rfloB6QzmwBTYHOyjltvTh89gTrWOthRaM2wmMcYpWFuh86hZV9iHgYXv0KcDGulZi-DNhFdfhZJH_UKdOfPe0TaX1O9eqs_cy22XoVxmgZ-NBUdVdTNk4qtzADWhYFrXRMZ_3rtkbiG0VP7HqtFKpEvj6SrXsLEYVp1XyW_kAiLxmYg0u4Oc46t2UtKaV79KKWZGnMCH_f4aVgiOSO6IX9kd_w&lib=MeRdQOUCwOmx82E0Ya8W08xsxEe4okU6t"; 
+    
+    var INTERVAL_CANVI = 10000; // Canvi de foto cada 10 segons (10000 ms)
+    var photosList = [];
+    var currentIndex = 0;
+    var container = document.getElementById('photo-container');
+    var loadingElem = document.getElementById('loading');
+    var dimmer = document.getElementById('dimmer-layer');
+
+    // 1. Carregar la llista de fotos
+    function loadPhotos() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', SCRIPT_URL, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            try {
+              photosList = JSON.parse(xhr.responseText);
+              if (photosList.length > 0) {
+                loadingElem.style.display = 'none';
+                initSlideshow();
+              } else {
+                loadingElem.innerHTML = 'L\'àlbum està buit.';
+              }
+            } catch(e) {
+              loadingElem.innerHTML = 'Error en processar les dades.';
+            }
+          } else {
+            loadingElem.innerHTML = 'Error en connectar amb Google Fotos.';
+          }
+        }
+      };
+      xhr.send();
+    }
+
+    // 2. Inicialitzar el passe de diapositives
+    function initSlideshow() {
+      showNextPhoto();
+      setInterval(showNextPhoto, INTERVAL_CANVI);
+    }
+
+    function showNextPhoto() {
+      if (photosList.length === 0) return;
+
+      var imgUrl = photosList[currentIndex];
+      var img = document.createElement('img');
+      img.className = 'slide';
+      img.src = imgUrl;
+
+      img.onload = function() {
+        container.appendChild(img);
+        
+        // Forçar el redibuixat per a la transició
+        setTimeout(function() {
+          img.className = 'slide active';
+        }, 50);
+
+        // Netejar la foto anterior
+        var oldSlides = container.getElementsByClassName('slide');
+        if (oldSlides.length > 1) {
+          setTimeout(function() {
+            if (oldSlides[0]) {
+              container.removeChild(oldSlides[0]);
+            }
+          }, 1600);
+        }
+      };
+
+      currentIndex = (currentIndex + 1) % photosList.length;
+    }
+
+    // 3. Control de brillantor mitjançant gestos de lliscament vertical
+    var touchStartY = 0;
+    var currentDimOpacity = 0;
+
+    window.addEventListener('touchstart', function(e) {
+      if (e.touches.length === 1) {
+        touchStartY = e.touches[0].clientY;
+      }
+    }, false);
+
+    window.addEventListener('touchmove', function(e) {
+      if (e.touches.length === 1) {
+        var touchEndY = e.touches[0].clientY;
+        var deltaY = touchStartY - touchEndY;
+
+        // Lliscament cap amunt -> Més fosc
+        if (deltaY > 30 && currentDimOpacity < 0.85) {
+          currentDimOpacity += 0.03;
+          touchStartY = touchEndY;
+        } 
+        // Lliscament cap avall -> Més clar
+        else if (deltaY < -30 && currentDimOpacity > 0) {
+          currentDimOpacity -= 0.03;
+          touchStartY = touchEndY;
+        }
+
+        dimmer.style.opacity = currentDimOpacity;
+      }
+    }, false);
+
+    // Iniciar
+    loadPhotos();
+  </script>
+</body>
+</html>
