@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Marc Digital - Streaming Buffer</title>
+  <title>Marc Digital</title>
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -87,28 +87,26 @@
 </head>
 <body>
 
-  <div id="status-message">Inicialitzant buffer d'imatges...</div>
+  <div id="status-message">Carregant imatges de Google Drive...</div>
   <div id="photo-container"></div>
   <div id="dimmer-layer"></div>
 
   <script>
-    // ⚠️ 1. LA TEVA URL DE GOOGLE APPS SCRIPT
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzA9bCTO63Dy4jLmvoGV4XjzzW-4AqEeXIoqIsbYNvCSMxp8ncJtKAppCy4SOIM9raneg/exec";
+    // URL DE GOOGLE APPS SCRIPT CONFIGURADA I VERIFICADA
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqG0GRYNKjZ7YBSPQtvk-7fLWS-tk5dqxZgnQbMd7B2IE57ZcZgmW4KBkHWbE_WSeB/exec"; 
     
-    // ⚠️ 2. CONFIGURACIÓ
-    var INTERVAL_FOTO = 12000; // Segons per foto (12000ms = 12s)
-    var BUFFER_SIZE = 3;       // Mida del buffer (sempre tindrem 3 fotos a la memòria)
+    var INTERVAL_FOTO = 12000; // Canvi de foto cada 12 segons
+    var BUFFER_SIZE = 3;       // Manté 3 fotos carregades per no omplir la memòria de l'iPad
 
-    var allUrls = [];          // Totes les URLs de l'àlbum
-    var currentIndex = 0;      // Índex de la foto actual que es mostra
-    var imageBuffer = {};      // Objecte per guardar els elements d'imatge carregats { index: ImageElement }
+    var allUrls = [];
+    var currentIndex = 0;
+    var imageBuffer = {};
     
     var container = document.getElementById('photo-container');
     var statusElem = document.getElementById('status-message');
     var dimmer = document.getElementById('dimmer-layer');
     var activeImgElement = null;
 
-    // 1. Descarregar la llista d'URLs
     function loadPhotoList() {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', SCRIPT_URL, true);
@@ -125,14 +123,12 @@
               if (Array.isArray(data) && data.length > 0) {
                 allUrls = data;
                 statusElem.style.display = 'none';
-                
-                // Iniciar el buffer d'estil Streaming
                 initStreamingBuffer();
               } else {
-                statusElem.innerHTML = "L'àlbum no té fotos.";
+                statusElem.innerHTML = "La carpeta de Drive no té fotos.";
               }
             } catch(e) {
-              statusElem.innerHTML = "Error en processar la llista de fotos.";
+              statusElem.innerHTML = "Error en processar les dades de Drive.";
             }
           } else {
             statusElem.innerHTML = "Error de connexió (" + xhr.status + ").";
@@ -142,41 +138,30 @@
       xhr.send();
     }
 
-    // 2. Gestionar la cua de precàrrega (Buffer)
     function preloadIndex(idx) {
-      // Si la foto ja està al buffer, no fem res
       if (imageBuffer[idx]) return;
 
       var img = new Image();
       img.className = 'slide';
       
       img.onload = function() {
-        // Guardem la imatge a la memòria cau del buffer
         imageBuffer[idx] = img;
       };
 
-      img.onerror = function() {
-        console.log("Error carregant la foto de l'índex: " + idx);
-      };
-
-      // Inicia la descàrrega en segon pla
       img.src = allUrls[idx];
     }
 
     function initStreamingBuffer() {
-      // Precarrreguem les primeres 3 fotos de la cua inicial
       for (var i = 0; i < BUFFER_SIZE; i++) {
         var targetIndex = (currentIndex + i) % allUrls.length;
         preloadIndex(targetIndex);
       }
 
-      // Esperem 1.5 segons que la primera foto es descarregui i arranquem el passe
       setTimeout(function() {
         startSlideshow();
       }, 1500);
     }
 
-    // 3. Reproductor / Canvi de diapositiva
     function startSlideshow() {
       renderCurrentPhoto();
       setInterval(renderCurrentPhoto, INTERVAL_FOTO);
@@ -185,7 +170,6 @@
     function renderCurrentPhoto() {
       if (allUrls.length === 0) return;
 
-      // Agafem la imatge del buffer (si no s'ha descarregat a temps, la creem)
       var imgToDisplay = imageBuffer[currentIndex];
 
       if (!imgToDisplay) {
@@ -194,18 +178,15 @@
         imgToDisplay.src = allUrls[currentIndex];
       }
 
-      // Inserim la nova foto al panell visual
       container.appendChild(imgToDisplay);
 
-      // Apliquem l'efecte de transició (Fade In)
       setTimeout(function() {
         imgToDisplay.className = 'slide active';
       }, 50);
 
-      // Esborrem visualment la foto anterior
       if (activeImgElement && activeImgElement !== imgToDisplay) {
         var oldImg = activeImgElement;
-        oldImg.className = 'slide'; // Fade out
+        oldImg.className = 'slide';
         
         setTimeout(function() {
           if (oldImg && oldImg.parentNode === container) {
@@ -216,24 +197,20 @@
 
       activeImgElement = imgToDisplay;
 
-      // --- NETEJA I MANTENIMENT DEL BUFFER (Neteja de Memòria RAM) ---
-      
-      // Calculem quin és l'índex que acaba de "quedar enrere" per esborrar-lo de la RAM
+      // Gestió de memòria RAM (Buffer d'estil streaming)
       var lastIndex = (currentIndex - 1 + allUrls.length) % allUrls.length;
       if (imageBuffer[lastIndex]) {
-        imageBuffer[lastIndex].src = ""; // Alliberem el pes del fitxer de la memòria de l'iPad
-        delete imageBuffer[lastIndex];   // Esborrem la referència
+        imageBuffer[lastIndex].src = "";
+        delete imageBuffer[lastIndex];
       }
 
-      // Calculem l'índex futur que s'ha de precarregar ara mateix
       var nextToPreload = (currentIndex + BUFFER_SIZE) % allUrls.length;
       preloadIndex(nextToPreload);
 
-      // Avancem l'índex principal
       currentIndex = (currentIndex + 1) % allUrls.length;
     }
 
-    // 4. Control de brillantor per gestos verticals
+    // Control de brillantor per gestos verticals
     var touchStartY = 0;
     var currentDimOpacity = 0;
 
@@ -261,7 +238,6 @@
       }
     }, false);
 
-    // Iniciar
     loadPhotoList();
   </script>
 </body>
