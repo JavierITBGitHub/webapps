@@ -1,10 +1,10 @@
-var CACHE_NAME = 'jabitxu-clock-v9';
+var CACHE_NAME = 'jabitxu-clock-v10';
 var ASSETS_TO_CACHE = [
   '../',
-  '../index.html?v=9',
-  '../css/style.css?v=9',
-  './clock.js?v=9',
-  './sw.js?v=9',
+  '../index.html?v=10',
+  '../css/style.css?v=10',
+  './clock.js?v=10',
+  './sw.js?v=10',
   '../img/icona-ipad.png'
 ];
 

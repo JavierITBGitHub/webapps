@@ -33,19 +33,19 @@ function ajustarMidesDispositiu() {
         RY = 630;
         svg.setAttribute('viewBox', '-500 -666.5 1000 1333');
         
-        moonGroup.setAttribute('transform', 'translate(0, -260)');
-        document.getElementById('brand').setAttribute('y', '-180');
-        tempEl.setAttribute('y', '220');
-        dateEl.setAttribute('y', '310');
+        document.getElementById('brand').setAttribute('y', '-220');
+        tempEl.setAttribute('y', '200');
+        dateEl.setAttribute('y', '280');
+        moonGroup.setAttribute('transform', 'translate(0, 360)'); // Sota de la data en vertical
     } else {
         RX = 630; 
         RY = 450;
         svg.setAttribute('viewBox', '-666.5 -500 1333 1000');
         
-        moonGroup.setAttribute('transform', 'translate(0, -200)');
-        document.getElementById('brand').setAttribute('y', '-130');
-        tempEl.setAttribute('y', '180');
-        dateEl.setAttribute('y', '250');
+        document.getElementById('brand').setAttribute('y', '-180');
+        tempEl.setAttribute('y', '160');
+        dateEl.setAttribute('y', '230');
+        moonGroup.setAttribute('transform', 'translate(0, 300)'); // Sota de la data en horitzontal
     }
 
     drawFace();
@@ -87,7 +87,7 @@ function fetchWeather() {
     });
 }
 
-/* Càlcul astronòmic de la Lluna (0.5 = Lluna Plena / Pleniluni) */
+/* Càlcul astronòmic de la Lluna */
 function updateMoonPhase() {
     var now = new Date();
     var year = now.getFullYear();
@@ -107,26 +107,22 @@ function updateMoonPhase() {
     var daysSinceNew = (jd - 2451549.5) % 29.53058867;
     if (daysSinceNew < 0) daysSinceNew += 29.53058867;
     
-    var phase = daysSinceNew / 29.53058867; // 0.0 = Nova, 0.5 = Plena
+    var phase = daysSinceNew / 29.53058867;
 
-    var r = 22.5; // Radi un 25% més gran
+    var r = 22.5;
     var path = "";
     var moonPhaseEl = document.getElementById('moon-phase');
 
-    // 1. LLUNA PLENA (al voltant de 0.5) -> Deixa veure la base 100% blanca
     if (phase >= 0.43 && phase <= 0.57) {
         path = ""; 
     } 
-    // 2. LLUNA NOVA (al voltant de 0.0 o 1.0) -> Tapada de negre completament
     else if (phase < 0.07 || phase > 0.93) {
         path = "M 0 " + (-r) + " A " + r + " " + r + " 0 1 1 0 " + r + " A " + r + " " + r + " 0 1 1 0 " + (-r);
     } 
-    // 3. QUART CREIXENT -> Ombra a l'esquerra
     else if (phase < 0.43) {
         var x = r - (phase * 4 * r);
         path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 0 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + (x > 0 ? 1 : 0) + " 0 " + (-r);
     } 
-    // 4. QUART MINVANT -> Ombra a la dreta
     else {
         var x = ((phase - 0.5) * 4 * r) - r;
         path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 1 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + (x > 0 ? 0 : 1) + " 0 " + (-r);
@@ -180,7 +176,6 @@ function updateContinuous() {
     var m = now.getMinutes();
     var s = now.getSeconds() + now.getMilliseconds() / 1000;
 
-    // Mode Nit (22:00h a 07:00h)
     if (hoursReal >= 22 || hoursReal < 7) {
         document.body.classList.add('night-mode');
     } else {
@@ -220,7 +215,6 @@ function updateContinuous() {
     requestAnimationFrame(updateContinuous);
 }
 
-/* Control de brillantor tàctil */
 var touchStartY = 0;
 window.addEventListener('touchstart', function(e) {
     if (e.touches.length === 1) {
