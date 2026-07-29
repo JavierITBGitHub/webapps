@@ -10,12 +10,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <link rel="apple-touch-icon" href="img/icona-ipad.png">
-    <link rel="stylesheet" href="css/style.css?v=7">
+    <link rel="stylesheet" href="css/style.css?v=9">
 
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('js/sw.js?v=7', { scope: './' }).catch(function(){});
+          navigator.serviceWorker.register('js/sw.js?v=9', { scope: './' }).catch(function(){});
         });
       }
     </script>
@@ -39,20 +39,32 @@
     <g id="marks"></g>
     <g id="numbers"></g>
 
-    <!-- 1. Fase Lunar (Base blanca radiant, radi 22.5) -->
-    <g id="moon-group" transform="translate(0, -200)">
-        <circle cx="0" cy="0" r="22.5" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
-        <path id="moon-phase" fill="#111111" opacity="0.9" d="" />
-    </g>
-
-    <!-- 2. Nom de la marca -->
-    <text id="brand" y="-130">JABitxu</text>
+    <!-- 1. Nom de la marca -->
+    <text id="brand" y="-180">JABitxu</text>
     
-    <!-- 3. Temperatura neta (sense icones) -->
-    <text id="temp" y="180">--°C</text>
+    <!-- 2. Temperatura neta -->
+    <text id="temp" y="160">--°C</text>
 
-    <!-- 4. Data -->
-    <text id="date" y="250">----</text>
+    <!-- 3. Data -->
+    <text id="date" y="230">----</text>
+
+    <!-- 4. Fase Lunar amb Cràters Subtils (a sota de la data) -->
+    <g id="moon-group" transform="translate(0, 300)">
+        <!-- Base blanca -->
+        <circle cx="0" cy="0" r="22.5" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+        
+        <!-- Cràters subtils (grisos amb opacitat baixa) -->
+        <g id="moon-craters" fill="#d0d0d0" opacity="0.6">
+            <circle cx="-7" cy="-6" r="4.5" />
+            <circle cx="6" cy="8" r="3.5" />
+            <circle cx="-8" cy="10" r="2.5" />
+            <circle cx="9" cy="-7" r="3" />
+            <circle cx="1" cy="-12" r="2" />
+        </g>
+        
+        <!-- Capa d'ombra astronòmica -->
+        <path id="moon-phase" fill="#111111" opacity="0.92" d="" />
+    </g>
 
     <!-- Manetes del rellotge -->
     <g id="h-hand-group">
@@ -69,6 +81,6 @@
 
 </svg>
 
-<script src="js/clock.js?v=7"></script>
+<script src="js/clock.js?v=9"></script>
 </body>
 </html>
