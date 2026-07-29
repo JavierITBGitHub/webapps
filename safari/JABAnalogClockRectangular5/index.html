@@ -5,21 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JABitxu Clock</title>
     
-    <!-- Configuració Pantalla Sencera com a PWA per a l'iPad -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="JABitxu Clock">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- Icona de l'escriptori -->
     <link rel="apple-touch-icon" href="img/icona-ipad.png">
-    
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- Registre del Service Worker situat a la carpeta /js/ amb abast total -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('js/sw.js', { scope: './' });
+          navigator.serviceWorker.register('js/sw.js', { scope: './' }).catch(function(){});
         });
       }
     </script>
@@ -40,32 +36,23 @@
         </filter>
     </defs>
 
-    <!-- Marques de fons -->
     <g id="marks"></g>
-
-    <!-- Números de les hores -->
     <g id="numbers"></g>
 
-    <!-- Textos informatius -->
     <text id="brand" y="-120">JABitxu</text>
     <text id="temp" y="180">--°C</text>
     <text id="date" y="250">----</text>
 
-    <!-- Maneta de les Hores -->
     <g id="h-hand-group">
         <path class="h-hand-main" d="M -7 30 L -7 -230 L 0 -250 L 7 -230 L 7 30 Z" />
         <line class="h-hand-nerve" x1="0" y1="20" x2="0" y2="-220" />
     </g>
     
-    <!-- Maneta dels Minuts -->
     <g id="m-hand-group">
         <polygon class="m-hand-main" points="-4,30 -4,-360 0,-385 4,-360 4,30" />
     </g>
     
-    <!-- Maneta dels Segons -->
     <line id="s-hand" x1="0" y1="40" x2="0" y2="-420" />
-
-    <!-- Botó/Eix Central Vermell -->
     <circle cx="0" cy="0" r="8" fill="#ff0000"/>
 
 </svg>

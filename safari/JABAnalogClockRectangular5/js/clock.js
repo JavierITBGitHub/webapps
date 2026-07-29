@@ -9,7 +9,6 @@ var sHand = document.getElementById('s-hand');
 var tempEl = document.getElementById('temp');
 var dateEl = document.getElementById('date');
 
-/* Radis dinàmics globals controlats per orientació */
 var RX = 630; 
 var RY = 450; 
 
@@ -20,7 +19,6 @@ function polar(a, rx, ry) {
     };
 }
 
-/* Funció adaptativa 100% compatible amb els girs i pantalles a iOS antic */
 function ajustarMidesDispositiu() {
     var isVertical = window.orientation === 0 || window.orientation === 180;
     
@@ -29,7 +27,6 @@ function ajustarMidesDispositiu() {
     }
 
     if (isVertical) {
-        // Mode Vertical (Portrait): S'estira cap amunt i avall (Proporció 3:4)
         RX = 460; 
         RY = 630;
         svg.setAttribute('viewBox', '-500 -666.5 1000 1333');
@@ -38,7 +35,6 @@ function ajustarMidesDispositiu() {
         tempEl.setAttribute('y', '220');
         dateEl.setAttribute('y', '310');
     } else {
-        // Mode Horitzontal (Landscape): Mode rectangular complet (Proporció 4:3)
         RX = 630; 
         RY = 450;
         svg.setAttribute('viewBox', '-666.5 -500 1333 1000');
@@ -51,7 +47,7 @@ function ajustarMidesDispositiu() {
     drawFace();
 }
 
-/* Meteo Seva tolerant a fallades de xarxa/offline */
+/* Meteo Seva ultra-compatible sense AbortController */
 function fetchWeather() {
     if (navigator.onLine === false) {
         tempEl.textContent = "--°C";
@@ -59,16 +55,17 @@ function fetchWeather() {
         return;
     }
 
-    var controller = new AbortController();
-    var timeoutId = setTimeout(function() {
-        controller.abort();
-    }, 5000);
+    var url = "https://api.open-meteo.com/v1/forecast?latitude=41.83&longitude=2.27&current_weather=true";
 
-    fetch("https://api.open-meteo.com/v1/forecast?latitude=41.83&longitude=2.27&current_weather=true", {
-        signal: controller.signal
-    })
+    // Promesa de temps límit per si la xarxa no respon (5 segons)
+    var timeoutPromise = new Promise(function(_, reject) {
+        setTimeout(function() {
+            reject(new Error("Timeout"));
+        }, 5000);
+    });
+
+    Promise.race([fetch(url), timeoutPromise])
     .then(function(res) {
-        clearTimeout(timeoutId);
         return res.json();
     })
     .then(function(data) {
@@ -97,7 +94,6 @@ function fetchWeather() {
     });
 }
 
-/* Dibuix de l'esfera */
 function drawFace() {
     marksG.innerHTML = "";
     numsG.innerHTML = "";
@@ -137,7 +133,6 @@ function drawFace() {
     }
 }
 
-/* Animació de manetes i colors */
 function updateContinuous() {
     var now = new Date();
     var hRaw = now.getHours() % 12;
@@ -153,7 +148,6 @@ function updateContinuous() {
     mHandGroup.setAttribute('transform', 'rotate(' + degM + ')');
     sHand.setAttribute('transform', 'rotate(' + degS + ')');
 
-    // 1. Marca de fons de l'hora corrent en vermell
     var horaActualMarca = h * 5;
     if (horaActualMarca === 60) { horaActualMarca = 0; }
 
@@ -169,7 +163,6 @@ function updateContinuous() {
         }
     }
 
-    // 2. Número vermell en l'hora en punt durant 60s
     var allNumbers = document.querySelectorAll('.number');
     for (var n = 0; n < allNumbers.length; n++) {
         var numEl = allNumbers[n];
@@ -191,7 +184,6 @@ function updateContinuous() {
     requestAnimationFrame(updateContinuous);
 }
 
-/* Esdeveniments de xarxa i orientació */
 window.addEventListener('resize', ajustarMidesDispositiu);
 window.addEventListener('orientationchange', function() {
     setTimeout(ajustarMidesDispositiu, 200);
@@ -203,7 +195,6 @@ window.addEventListener('offline', function() {
     tempEl.removeAttribute('class');
 });
 
-/* Inicialització */
 ajustarMidesDispositiu();
 fetchWeather();
 updateContinuous();

@@ -1,4 +1,4 @@
-var CACHE_NAME = 'jabitxu-clock-v2';
+var CACHE_NAME = 'jabitxu-clock-v3';
 var ASSETS_TO_CACHE = [
   '../',
   '../index.html',
@@ -17,7 +17,6 @@ self.addEventListener('install', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-  // Ignorem les peticions exteriors de la intempèrie per evitar bloquejos a la memòria cau
   if (e.request.url.indexOf('open-meteo.com') !== -1) {
     return;
   }
