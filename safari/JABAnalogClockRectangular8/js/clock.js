@@ -87,7 +87,7 @@ function fetchWeather() {
     });
 }
 
-/* Càlcul astronòmic de la Lluna (Algoritme d'alta precisió recalibrat) */
+/* Càlcul astronòmic de la Lluna (0.5 = Lluna Plena / Pleniluni) */
 function updateMoonPhase() {
     var now = new Date();
     var year = now.getFullYear();
@@ -104,34 +104,32 @@ function updateMoonPhase() {
     
     var jd = c + day + e + f - 1524.5;
     
-    var daysSinceFull = (jd - 2451549.5) % 29.53058867;
-    if (daysSinceFull < 0) daysSinceFull += 29.53058867;
+    var daysSinceNew = (jd - 2451549.5) % 29.53058867;
+    if (daysSinceNew < 0) daysSinceNew += 29.53058867;
     
-    var phase = daysSinceFull / 29.53058867;
+    var phase = daysSinceNew / 29.53058867; // 0.0 = Nova, 0.5 = Plena
 
     var r = 22.5; // Radi un 25% més gran
     var path = "";
     var moonPhaseEl = document.getElementById('moon-phase');
 
-    // Pleniluni / Lluna Plena -> Cercle blanc 100% radiant
-    if (phase < 0.06 || phase > 0.94) {
-        path = "M 0 " + (-r) + " A " + r + " " + r + " 0 1 1 0 " + r + " A " + r + " " + r + " 0 1 1 0 " + (-r);
-    } 
-    // Quart Minvant
-    else if (phase >= 0.06 && phase < 0.44) {
-        var x = (phase * 4 * r) - r;
-        var sweep = x > 0 ? 0 : 1;
-        path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 0 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + sweep + " 0 " + (-r);
-    } 
-    // Lluna Nova
-    else if (phase >= 0.44 && phase <= 0.56) {
+    // 1. LLUNA PLENA (al voltant de 0.5) -> Deixa veure la base 100% blanca
+    if (phase >= 0.43 && phase <= 0.57) {
         path = ""; 
     } 
-    // Quart Creixent
+    // 2. LLUNA NOVA (al voltant de 0.0 o 1.0) -> Tapada de negre completament
+    else if (phase < 0.07 || phase > 0.93) {
+        path = "M 0 " + (-r) + " A " + r + " " + r + " 0 1 1 0 " + r + " A " + r + " " + r + " 0 1 1 0 " + (-r);
+    } 
+    // 3. QUART CREIXENT -> Ombra a l'esquerra
+    else if (phase < 0.43) {
+        var x = r - (phase * 4 * r);
+        path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 0 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + (x > 0 ? 1 : 0) + " 0 " + (-r);
+    } 
+    // 4. QUART MINVANT -> Ombra a la dreta
     else {
-        var x = r - ((phase - 0.5) * 4 * r);
-        var sweep = x > 0 ? 1 : 0;
-        path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 1 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + sweep + " 0 " + (-r);
+        var x = ((phase - 0.5) * 4 * r) - r;
+        path = "M 0 " + (-r) + " A " + r + " " + r + " 0 0 1 0 " + r + " A " + Math.abs(x) + " " + r + " 0 0 " + (x > 0 ? 0 : 1) + " 0 " + (-r);
     }
     
     if (moonPhaseEl) {
