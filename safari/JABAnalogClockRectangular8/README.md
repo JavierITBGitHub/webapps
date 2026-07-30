@@ -1,42 +1,39 @@
-```
+# JABitxu Clock (v8 20260730)
+
+Aplicació Web Progressiva (PWA) de rellotge analògic personalitzat, dissenyada específicament per a pantalles iPad en orientació horitzontal i vertical.
 
 ---
 
-## 🚀 Instruccions d'Instal·lació i Ús
+## 🚀 Característiques Principals
 
-### 1. Instal·lació en un servidor web
-Puja tots els arxius de la carpeta del projecte al teu servidor web o hosting (per exemple, via FTP, GitHub Pages, Netlify o Vercel).
-
-> **Nota sobre HTTPS:** Els *Service Workers* requereixen que la web se serveixi sota protocol segur (`https://`) per poder emmagatzemar la memòria cau a l'iPad.
-
-### 2. Afegir a la pantalla d'inici de l'iPad (Mode PWA)
-Per a una experiència de pantalla sencera sense barra de navegació de Safari:
-
-1. Obre **Safari** a l'iPad i entra a la URL on has pujat el rellotge.
-2. Toca la icona de **Compartir** (el quadrat amb la fletxa cap amunt).
-3. Selecciona l'opció **"Afegeix a la pantalla d'inici"**.
-4. Posa-li el nom que vulguis (ex: *JABitxu Clock*) i prem **Afegir**.
-5. Obre l'aplicació directament des de la nova icona de l'escriptori. S'obrirà a **pantalla sencera**.
+* **Disseny Adaptatiu (Responsive):** Reorganitza automàticament els elements en mode Horitzontal (`viewBox="-666.5 -500 1333 1000"`) o Vertical (`viewBox="-500 -666.5 1000 1333"`).
+* **Fase Lunar Astronòmica amb Cràters:** Càlcul automàtic de la fase lunar en temps real segons la data del calendari julià, amb detalls subtils de cràters i ombra de fase dinàmica.
+* **Informació Meteorològica Integrada:** Previsió de temperatura en temps real per a Seva (Osona) mitjançant l'API d'Open-Meteo, amb codificació de colors segons el rang tèrmic.
+* **Gestió Intel·ligent de Brillantor (Mode Nit/Dia):**
+  * **Mode Dia (06:00h - 00:00h):** Brillantor ajustada al **60%** (`0.60`) per a una visualització confortable i elegant en interiors.
+  * **Mode Nit (00:00h - 06:00h):** Atenuació automàtica al **20%** (`0.20`) d'opacitat per evitar molèsties a la foscor.
+  * **Sense Alteració de Colors:** Els colors originals de les agulles, números i fons es mantenen 100% fidels les 24 hores del dia.
+  * **Control Tàctil:** Permet ajustar la brillantor manualment fent gliscar un dit verticalment per la pantalla (`touchmove`).
+* **Suport Offline (PWA / Service Worker):** Memòria cau d'actius (`v13`) per funcionar de manera fluida com a aplicació independent d'iOS/iPadOS sense barra de navegació.
 
 ---
 
-## 🎮 Instruccions de Funcionament i Gestos
+## 📁 Estructura del Projecte
 
-| Acció / Gest | Resultat |
+| Fitxer | Descripció |
 | :--- | :--- |
-| **Girar l'iPad (Horitzontal ↔ Vertical)** | El rellotge redibuixa l'el·lipse i recol·loca els textos automàticament sense deformar-se. |
-| **Lliscar el dit cap amunt** | Incrementa la brillantor de la pantalla. |
-| **Lliscar el dit cap avall** | Redueix la brillantor de la pantalla (ideal per a la nit). |
-| **Arribar a les 22:00h** | S'activa automàticament el **Mode Nit** (tons vermells foscos atenuats). |
-| **Arribar a les 07:00h** | S'activa el **Mode Dia** normal. |
-| **Desconnexió d'Internet** | El rellotge, la data i la lluna continuen funcionant. La temperatura mostra `--°C`. |
+| `index.html` | Estructura principal en SVG vectorial i configuració PWA per a iPadOS. |
+| `css/style.css` | Estils visuals, escalat de text, fonts i colors de temperatura. |
+| `js/clock.js` | Lògica contínua del rellotge, càlcul astronòmic lunar, API temps i gestió de brillantor. |
+| `js/sw.js` | Service Worker amb gestió de memòria cau versió `v13`. |
+| `img/icona-ipad.png` | Icona de l'aplicació per a la pantalla d'inici d'iPad. |
 
 ---
 
-## 🛠️ Tecnologies Utilitzades
+## 📋 Historial de Versions
 
-* **HTML5 / SVG:** Gràfics vectorials escalables per a una nitidesa perfecta en pantalles Retina.
-* **CSS3:** Variables d'entorn (`var(--accent)`), Flexbox i filtres de brillantor.
-* **JavaScript (ES5/ES6):** Manipulació de DOM vectorial, càlculs trigonomètrics de posició polar i càlculs astronòmics de la fase lunar.
-* **Open-Meteo API:** Servei de previsió meteorològica gratuït i sense clau API.
-* **Service Workers API:** Gestió de memòria cau local per al suport Offline.
+* **`v13`**: Ajust de brillantor automàtica (**60% Dia** / **20% Nit**) de 00:00h a 06:00h sense cap alteració de colors.
+* **`v12`**: Eliminació del mode de color vermell nocturn; manteniment dels colors originals mitjançant control d'opacitat.
+* **`v11`**: Correcció de la posició vertical i horitzontal de la Lluna situant-la a sota de la data.
+* **`v10`**: Reorganització d'elements visuals: Marca (dalt), Temperatura, Data i Lluna.
+* **`v9`**: Incorporació de detall de cràters subtils a la superfície lunar.
