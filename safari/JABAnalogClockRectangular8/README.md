@@ -1,6 +1,15 @@
-# JABitxu Clock8 (v13 20260730)
+# JABitxu Clock (v13) 
+## JABAnalogClockRectangular8_v13.20260730
 
 Aplicació Web Progressiva (PWA) de rellotge analògic personalitzat, dissenyada específicament per a pantalles iPad en orientació horitzontal i vertical.
+
+---
+
+## 📱 Captura de Pantalla / Vista Prèvia
+
+![JABitxu Clock en execució a l'iPad](./img/JABAnalogClockRectangular8_v13.20260730.jpeg)
+
+*Exemple del rellotge en funcionament en un iPad (Mode Vertical).*
 
 ---
 
@@ -27,6 +36,7 @@ Aplicació Web Progressiva (PWA) de rellotge analògic personalitzat, dissenyada
 | `js/clock.js` | Lògica contínua del rellotge, càlcul astronòmic lunar, API temps i gestió de brillantor. |
 | `js/sw.js` | Service Worker amb gestió de memòria cau versió `v13`. |
 | `img/icona-ipad.png` | Icona de l'aplicació per a la pantalla d'inici d'iPad. |
+| `img/JABAnalogClockRectangular8_v13.20260730.jpeg` | Imatge d'exemple d'execució real a l'iPad. |
 
 ---
 
