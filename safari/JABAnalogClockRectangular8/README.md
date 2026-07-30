@@ -1,4 +1,4 @@
-# JABitxu Clock (v8 20260730)
+# JABitxu Clock8 (v13 20260730)
 
 Aplicació Web Progressiva (PWA) de rellotge analògic personalitzat, dissenyada específicament per a pantalles iPad en orientació horitzontal i vertical.
 
