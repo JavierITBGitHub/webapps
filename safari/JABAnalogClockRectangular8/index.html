@@ -10,12 +10,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <link rel="apple-touch-icon" href="img/icona-ipad.png">
-    <link rel="stylesheet" href="css/style.css?v=11">
+    <link rel="stylesheet" href="css/style.css?v=13">
 
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('js/sw.js?v=11', { scope: './' }).catch(function(){});
+          navigator.serviceWorker.register('js/sw.js?v=13', { scope: './' }).catch(function(){});
         });
       }
     </script>
@@ -39,7 +39,7 @@
     <g id="marks"></g>
     <g id="numbers"></g>
 
-    <!-- 1. Nom de la marca (a dalt) -->
+    <!-- 1. Nom de la marca -->
     <text id="brand" y="-180">JABitxu</text>
     
     <!-- 2. Temperatura neta -->
@@ -48,7 +48,7 @@
     <!-- 3. Data -->
     <text id="date" y="230">----</text>
 
-    <!-- 4. Fase Lunar amb Cràters (Sota de la data) -->
+    <!-- 4. Fase Lunar amb Cràters -->
     <g id="moon-group" transform="translate(0, 300)">
         <circle cx="0" cy="0" r="22.5" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
         
@@ -78,6 +78,6 @@
 
 </svg>
 
-<script src="js/clock.js?v=11"></script>
+<script src="js/clock.js?v=13"></script>
 </body>
 </html>

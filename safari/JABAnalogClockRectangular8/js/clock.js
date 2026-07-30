@@ -12,7 +12,9 @@ var moonGroup = document.getElementById('moon-group');
 
 var RX = 630; 
 var RY = 450; 
-var currentBrightness = 1.0;
+var currentBrightness = 0.60; // Brillantor per defecte de dia al 60%
+var manualBrightnessTouch = false;
+var lastAutoNightState = null;
 
 function polar(a, rx, ry) {
     return {
@@ -176,10 +178,17 @@ function updateContinuous() {
     var m = now.getMinutes();
     var s = now.getSeconds() + now.getMilliseconds() / 1000;
 
-    if (hoursReal >= 22 || hoursReal < 7) {
-        document.body.classList.add('night-mode');
-    } else {
-        document.body.classList.remove('night-mode');
+    // HORARI AUTOMÀTIC: 
+    // - Nit (00:00h a 06:00h) -> 20% d'opacitat (0.20)
+    // - Dia (06:00h a 00:00h) -> 60% d'opacitat (0.60)
+    var isNightTime = (hoursReal >= 0 && hoursReal < 6);
+
+    if (isNightTime !== lastAutoNightState) {
+        lastAutoNightState = isNightTime;
+        if (!manualBrightnessTouch) {
+            currentBrightness = isNightTime ? 0.20 : 0.60;
+            svg.style.opacity = currentBrightness;
+        }
     }
 
     var degH = (hRaw * 30) + (m * 0.5);
@@ -229,13 +238,11 @@ window.addEventListener('touchmove', function(e) {
         var delta = diffY / window.innerHeight;
         var newBrightness = Math.min(Math.max(currentBrightness + delta, 0.15), 1.0);
         
-        svg.style.opacity = newBrightness;
+        manualBrightnessTouch = true;
+        currentBrightness = newBrightness;
+        svg.style.opacity = currentBrightness;
     }
 }, { passive: true });
-
-window.addEventListener('touchend', function(e) {
-    currentBrightness = parseFloat(svg.style.opacity) || currentBrightness;
-});
 
 window.addEventListener('resize', ajustarMidesDispositiu);
 window.addEventListener('orientationchange', function() {
