@@ -1,4 +1,4 @@
-/* Llista d'imatges OK */
+/* Llista d'imatges */
 var imatges = [
   'img/9eMes_SitgesFestaMajor-139.JPG',
   'img/2015NY-535.JPG',
@@ -225,7 +225,7 @@ var timerCanviFoto = null;
 var hideControlsTimer = null;
 var preloadedImages = {};
 
-// Elements DOM
+// DOM Elements
 var layer1 = document.getElementById('bg-layer-1');
 var layer2 = document.getElementById('bg-layer-2');
 var clockEl = document.getElementById('clock-digital');
@@ -235,7 +235,7 @@ var tempEl = document.getElementById('temp-val');
 var weatherIconEl = document.getElementById('weather-icon');
 var brightnessOverlay = document.getElementById('brightness-overlay');
 
-// Controladors de navegació i configuració
+// Controls UI
 var btnPrev = document.getElementById('btn-prev');
 var btnNext = document.getElementById('btn-next');
 var btnSettings = document.getElementById('btn-settings');
@@ -252,7 +252,7 @@ var chkClock = document.getElementById('chk-clock');
 var chkDate = document.getElementById('chk-date');
 var chkWeather = document.getElementById('chk-weather');
 
-/* Configuració per defecte (Minuts sensers) */
+/* Config per defecte (2 minuts) */
 var config = {
   speedMinutes: 2,
   textSize: 'normal',
@@ -264,19 +264,25 @@ var config = {
   showWeather: true
 };
 
-/* Format text minuts */
+/* Format de text per a la temporització (0 a 120 minuts) */
 function formatMinutsText(minuts) {
   minuts = parseInt(minuts, 10);
-  if (minuts === 0) return "Fixe (sense canvi)";
-  if (minuts === 1) return "1 minut";
-  return minuts + " minuts";
+  if (minuts === 0) return "Fixa (sense canvi)";
+  if (minuts < 60) {
+    return minuts === 1 ? "1 minut" : minuts + " minuts";
+  } else {
+    var hores = Math.floor(minuts / 60);
+    var minResta = minuts % 60;
+    var horesText = hores === 1 ? "1 hora" : hores + " hores";
+    if (minResta === 0) return horesText;
+    return horesText + " i " + minResta + " min";
+  }
 }
 
-/* Precàrrega de 3 imatges a memòria */
+/* Precàrrega de les 3 imatges següents */
 function precarrregarImatges() {
   if (!imatges || imatges.length === 0) return;
-  
-  for (var offset = 0; offset < 3; offset++) {
+  for (var offset = 1; offset <= 3; offset++) {
     var idx = (indexImatge + offset) % imatges.length;
     var url = imatges[idx];
     if (!preloadedImages[url]) {
@@ -287,7 +293,6 @@ function precarrregarImatges() {
   }
 }
 
-/* Carregar Configuració des de LocalStorage */
 function carregarConfiguracio() {
   var savedConfig = localStorage.getItem('marc_digital_arte_config');
   if (savedConfig) {
@@ -296,7 +301,6 @@ function carregarConfiguracio() {
     } catch(e){}
   }
 
-  // Actualitzar valors UI
   rangeSpeed.value = config.speedMinutes;
   speedVal.textContent = formatMinutsText(config.speedMinutes);
   selectTextSize.value = config.textSize;
@@ -314,17 +318,20 @@ rangeSpeed.addEventListener('input', function() {
   speedVal.textContent = formatMinutsText(this.value);
 });
 
-/* Aplicar la configuració */
 function aplicarConfiguracio() {
-  // 1. Mostrar/Amagar elements
   clockEl.style.display = config.showClock ? 'block' : 'none';
   dateEl.style.display = config.showDate ? 'block' : 'none';
   weatherBox.style.display = config.showWeather ? 'flex' : 'none';
 
-  // 2. Mida del Text i Posició
   document.body.className = 'pos-' + config.position + ' size-' + config.textSize + ' effect-' + config.effect;
 
-  // 3. Mode Nit (00:00h - 06:00h) o Brillantor
+  actualitzaBrillantor();
+  iniciarTemporitzador();
+
+  localStorage.setItem('marc_digital_arte_config', JSON.stringify(config));
+}
+
+function actualitzaBrillantor() {
   var ara = new Date();
   var hora = ara.getHours();
   var esModeNit = hora >= 0 && hora < 6;
@@ -335,12 +342,6 @@ function aplicarConfiguracio() {
     var opacitatFosca = (100 - config.brightness) / 100;
     brightnessOverlay.style.opacity = opacitatFosca;
   }
-
-  // 4. Temporitzador de canvi de foto
-  iniciarTemporitzador();
-
-  // Desar
-  localStorage.setItem('marc_digital_arte_config', JSON.stringify(config));
 }
 
 function iniciarTemporitzador() {
@@ -354,7 +355,6 @@ function iniciarTemporitzador() {
   }
 }
 
-/* Barrejar Fotos */
 function barrejarFotos(array) {
   for (var i = array.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
@@ -364,10 +364,15 @@ function barrejarFotos(array) {
   }
 }
 
-/* Transició de fotos (Direcció: +1 següent, -1 anterior) */
 function canviarImatgeFons(direccio) {
   if (!imatges || imatges.length === 0) return;
-  if (!direccio) direccio = 1;
+
+  if (direccio === 0) {
+    layer1.style.backgroundImage = "url('" + encodeURI(imatges[indexImatge]) + "')";
+    layer1.classList.add('active');
+    precarrregarImatges();
+    return;
+  }
 
   indexImatge = (indexImatge + direccio + imatges.length) % imatges.length;
   var nextImgUrl = imatges[indexImatge];
@@ -387,7 +392,6 @@ function canviarImatgeFons(direccio) {
   }
 }
 
-/* Formatar la data catalana */
 function formatarDataCatalana(data) {
   var dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
   var mesos = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
@@ -395,7 +399,6 @@ function formatarDataCatalana(data) {
   var diaSetmana = dies[data.getDay()];
   var diaMes = data.getDate();
   var mesNom = mesos[data.getMonth()];
-  
   var preposicio = (mesNom.startsWith('A') || mesNom.startsWith('O')) ? "d'" : "de ";
   
   return diaSetmana + ", " + diaMes + " " + preposicio + mesNom;
@@ -410,8 +413,7 @@ function actualitzaRellotge() {
   clockEl.textContent = h + ':' + m;
 
   dateEl.textContent = formatarDataCatalana(ara);
-  
-  aplicarConfiguracio();
+  actualitzaBrillantor();
 }
 
 function getIconaTemps(code) {
@@ -427,35 +429,26 @@ function getIconaTemps(code) {
 
 function aplicarColorTemperatura(temp) {
   tempEl.classList.remove('temp-cold', 'temp-normal', 'temp-hot', 'temp-extreme-hot');
-  
-  if (temp <= 12) {
-    tempEl.classList.add('temp-cold');
-  } else if (temp >= 35) {
-    tempEl.classList.add('temp-extreme-hot');
-  } else if (temp >= 25) {
-    tempEl.classList.add('temp-hot');
-  } else {
-    tempEl.classList.add('temp-normal');
-  }
+  if (temp <= 12) tempEl.classList.add('temp-cold');
+  else if (temp >= 35) tempEl.classList.add('temp-extreme-hot');
+  else if (temp >= 25) tempEl.classList.add('temp-hot');
+  else tempEl.classList.add('temp-normal');
 }
 
 function carregarTempsSeva() {
   var url = "https://api.open-meteo.com/v1/forecast?latitude=41.8386&longitude=2.2743&current_weather=true";
-
   fetch(url)
-    .then(function(response) { return response.json(); })
+    .then(function(res) { return res.json(); })
     .then(function(data) {
       if (data && data.current_weather) {
         var temp = Math.round(data.current_weather.temperature);
-        var weatherCode = data.current_weather.weathercode;
         tempEl.textContent = temp + "°C";
-        weatherIconEl.textContent = getIconaTemps(weatherCode);
+        weatherIconEl.textContent = getIconaTemps(data.current_weather.weathercode);
         aplicarColorTemperatura(temp);
       }
-    }).catch(function(err){});
+    }).catch(function(){});
 }
 
-/* Gestió dels controls visuals en tocar la pantalla (<, > i ⚙️) */
 function mostrarControlsUI() {
   btnSettings.classList.add('visible');
   btnPrev.classList.add('visible');
@@ -484,7 +477,6 @@ function onPantallaTocada(e) {
 document.body.addEventListener('touchstart', onPantallaTocada, { passive: true });
 document.body.addEventListener('click', onPantallaTocada);
 
-// Navegació Manual
 btnPrev.addEventListener('click', function(e) {
   e.stopPropagation();
   canviarImatgeFons(-1);
@@ -497,15 +489,12 @@ btnNext.addEventListener('click', function(e) {
   iniciarTemporitzador();
 });
 
-// Modal Configuració
-function obrirModal(e) {
+btnSettings.addEventListener('click', function(e) {
   if (e) e.stopPropagation();
   modalSettings.classList.remove('hidden');
-}
+});
 
-btnSettings.addEventListener('click', obrirModal);
-
-function tancarModal() {
+btnCloseSettings.addEventListener('click', function() {
   config.speedMinutes = rangeSpeed.value;
   config.textSize = selectTextSize.value;
   config.position = selectPosition.value;
@@ -520,13 +509,10 @@ function tancarModal() {
   btnSettings.classList.remove('visible');
   btnPrev.classList.remove('visible');
   btnNext.classList.remove('visible');
-}
+});
 
-btnCloseSettings.addEventListener('click', tancarModal);
-
-/* Inicialització */
+/* Execució inicial */
 barrejarFotos(imatges);
-precarrregarImatges();
 canviarImatgeFons(0);
 actualitzaRellotge();
 carregarTempsSeva();
