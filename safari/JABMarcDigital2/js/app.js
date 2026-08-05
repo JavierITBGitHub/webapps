@@ -222,7 +222,8 @@ var imatges = [
 var indexImatge = 0;
 var currentLayer = 1;
 var timerCanviFoto = null;
-var hideSettingsTimer = null;
+var hideControlsTimer = null;
+var preloadedImages = {};
 
 // Elements DOM
 var layer1 = document.getElementById('bg-layer-1');
@@ -234,22 +235,28 @@ var tempEl = document.getElementById('temp-val');
 var weatherIconEl = document.getElementById('weather-icon');
 var brightnessOverlay = document.getElementById('brightness-overlay');
 
-// Elements de Configuració
+// Controladors de navegació i configuració
+var btnPrev = document.getElementById('btn-prev');
+var btnNext = document.getElementById('btn-next');
 var btnSettings = document.getElementById('btn-settings');
 var modalSettings = document.getElementById('settings-modal');
 var btnCloseSettings = document.getElementById('btn-close-settings');
 
 var rangeSpeed = document.getElementById('range-speed');
 var speedVal = document.getElementById('speed-val');
+var selectTextSize = document.getElementById('select-text-size');
+var selectPosition = document.getElementById('select-position');
 var selectEffect = document.getElementById('select-effect');
 var rangeBrightness = document.getElementById('range-brightness');
 var chkClock = document.getElementById('chk-clock');
 var chkDate = document.getElementById('chk-date');
 var chkWeather = document.getElementById('chk-weather');
 
-/* Configuració per defecte */
+/* Configuració per defecte (Minuts sensers) */
 var config = {
-  speed: 120,
+  speedMinutes: 2,
+  textSize: 'normal',
+  position: 'bottom-right',
   effect: 'fade',
   brightness: 100,
   showClock: true,
@@ -257,38 +264,43 @@ var config = {
   showWeather: true
 };
 
-/* Format text segons */
-function formatTempsText(segons) {
-  segons = parseInt(segons, 10);
-  if (segons === 0) return "Fixe (sense canvi)";
-  if (segons < 60) return segons + " segons";
+/* Format text minuts */
+function formatMinutsText(minuts) {
+  minuts = parseInt(minuts, 10);
+  if (minuts === 0) return "Fixe (sense canvi)";
+  if (minuts === 1) return "1 minut";
+  return minuts + " minuts";
+}
+
+/* Precàrrega de 3 imatges a memòria */
+function precarrregarImatges() {
+  if (!imatges || imatges.length === 0) return;
   
-  var minuts = Math.floor(segons / 60);
-  var segonsResta = segons % 60;
-  
-  if (minuts < 60) {
-    if (segonsResta === 0) return minuts + (minuts === 1 ? " minut" : " minuts");
-    return minuts + "m " + segonsResta + "s";
-  } else {
-    var hores = Math.floor(minuts / 60);
-    var minutsResta = minuts % 60;
-    if (minutsResta === 0) return hores + (hores === 1 ? " hora" : " hores");
-    return hores + "h " + minutsResta + "m";
+  for (var offset = 0; offset < 3; offset++) {
+    var idx = (indexImatge + offset) % imatges.length;
+    var url = imatges[idx];
+    if (!preloadedImages[url]) {
+      var img = new Image();
+      img.src = encodeURI(url);
+      preloadedImages[url] = img;
+    }
   }
 }
 
 /* Carregar Configuració des de LocalStorage */
 function carregarConfiguracio() {
-  var savedConfig = localStorage.getItem('marc_digital_config');
+  var savedConfig = localStorage.getItem('marc_digital_arte_config');
   if (savedConfig) {
     try {
-      config = JSON.parse(savedConfig);
+      config = Object.assign(config, JSON.parse(savedConfig));
     } catch(e){}
   }
 
-  // Aplicar valors als controls del menú
-  rangeSpeed.value = config.speed;
-  speedVal.textContent = formatTempsText(config.speed);
+  // Actualitzar valors UI
+  rangeSpeed.value = config.speedMinutes;
+  speedVal.textContent = formatMinutsText(config.speedMinutes);
+  selectTextSize.value = config.textSize;
+  selectPosition.value = config.position;
   selectEffect.value = config.effect;
   rangeBrightness.value = config.brightness;
   chkClock.checked = config.showClock;
@@ -298,45 +310,48 @@ function carregarConfiguracio() {
   aplicarConfiguracio();
 }
 
-/* Actualitzar text del lliscador en moure'l */
 rangeSpeed.addEventListener('input', function() {
-  speedVal.textContent = formatTempsText(this.value);
+  speedVal.textContent = formatMinutsText(this.value);
 });
 
-/* Aplicar la configuració a la pantalla amb comprovació de Mode Nit */
+/* Aplicar la configuració */
 function aplicarConfiguracio() {
   // 1. Mostrar/Amagar elements
   clockEl.style.display = config.showClock ? 'block' : 'none';
   dateEl.style.display = config.showDate ? 'block' : 'none';
   weatherBox.style.display = config.showWeather ? 'flex' : 'none';
 
-  // 2. Mode Nit (00:00h - 06:00h) o Brillantor personalitzada
+  // 2. Mida del Text i Posició
+  document.body.className = 'pos-' + config.position + ' size-' + config.textSize + ' effect-' + config.effect;
+
+  // 3. Mode Nit (00:00h - 06:00h) o Brillantor
   var ara = new Date();
   var hora = ara.getHours();
   var esModeNit = hora >= 0 && hora < 6;
 
   if (esModeNit) {
-    // Mode Nit: atenuació automàtica al 20% de llum (0.80 d'opacitat fosca overlay)
     brightnessOverlay.style.opacity = 0.80;
   } else {
-    // Mode normal segons l'ajust de l'usuari
     var opacitatFosca = (100 - config.brightness) / 100;
     brightnessOverlay.style.opacity = opacitatFosca;
   }
 
-  // 3. Efectes de transició
-  document.body.className = 'effect-' + config.effect;
-
   // 4. Temporitzador de canvi de foto
-  if (timerCanviFoto) clearInterval(timerCanviFoto);
-  
-  var segons = parseInt(config.speed, 10);
-  if (segons > 0) {
-    timerCanviFoto = setInterval(canviarImatgeFons, segons * 1000);
-  }
+  iniciarTemporitzador();
 
   // Desar
-  localStorage.setItem('marc_digital_config', JSON.stringify(config));
+  localStorage.setItem('marc_digital_arte_config', JSON.stringify(config));
+}
+
+function iniciarTemporitzador() {
+  if (timerCanviFoto) clearInterval(timerCanviFoto);
+  
+  var minuts = parseInt(config.speedMinutes, 10);
+  if (minuts > 0) {
+    timerCanviFoto = setInterval(function() {
+      canviarImatgeFons(1);
+    }, minuts * 60 * 1000);
+  }
 }
 
 /* Barrejar Fotos */
@@ -349,27 +364,30 @@ function barrejarFotos(array) {
   }
 }
 
-/* Transició de fotos */
-function canviarImatgeFons() {
+/* Transició de fotos (Direcció: +1 següent, -1 anterior) */
+function canviarImatgeFons(direccio) {
   if (!imatges || imatges.length === 0) return;
+  if (!direccio) direccio = 1;
 
-  var nextImg = imatges[indexImatge];
-  indexImatge = (indexImatge + 1) % imatges.length;
+  indexImatge = (indexImatge + direccio + imatges.length) % imatges.length;
+  var nextImgUrl = imatges[indexImatge];
+
+  precarrregarImatges();
 
   if (currentLayer === 1) {
-    layer2.style.backgroundImage = "url('" + encodeURI(nextImg) + "')";
+    layer2.style.backgroundImage = "url('" + encodeURI(nextImgUrl) + "')";
     layer2.classList.add('active');
     layer1.classList.remove('active');
     currentLayer = 2;
   } else {
-    layer1.style.backgroundImage = "url('" + encodeURI(nextImg) + "')";
+    layer1.style.backgroundImage = "url('" + encodeURI(nextImgUrl) + "')";
     layer1.classList.add('active');
     layer2.classList.remove('active');
     currentLayer = 1;
   }
 }
 
-/* Formatar la data amb el mes en majúscula */
+/* Formatar la data catalana */
 function formatarDataCatalana(data) {
   var dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
   var mesos = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
@@ -383,7 +401,6 @@ function formatarDataCatalana(data) {
   return diaSetmana + ", " + diaMes + " " + preposicio + mesNom;
 }
 
-/* Rellotge i Data */
 function actualitzaRellotge() {
   var ara = new Date();
   var h = ara.getHours();
@@ -394,11 +411,9 @@ function actualitzaRellotge() {
 
   dateEl.textContent = formatarDataCatalana(ara);
   
-  // Re-aplicar configuració per actualitzar el Mode Nit si canvia d'hora
   aplicarConfiguracio();
 }
 
-/* Temps Seva i Color segons Temperatura */
 function getIconaTemps(code) {
   if (code === 0) return '☀️';
   if (code >= 1 && code <= 3) return '⛅';
@@ -414,13 +429,13 @@ function aplicarColorTemperatura(temp) {
   tempEl.classList.remove('temp-cold', 'temp-normal', 'temp-hot', 'temp-extreme-hot');
   
   if (temp <= 12) {
-    tempEl.classList.add('temp-cold');        // Blau: Fred (<= 12°C)
+    tempEl.classList.add('temp-cold');
   } else if (temp >= 35) {
-    tempEl.classList.add('temp-extreme-hot'); // Vermell: Molta calor (>= 35°C)
+    tempEl.classList.add('temp-extreme-hot');
   } else if (temp >= 25) {
-    tempEl.classList.add('temp-hot');         // Taronja: Calor (25°C - 34°C)
+    tempEl.classList.add('temp-hot');
   } else {
-    tempEl.classList.add('temp-normal');      // Verd: Normal (13°C - 24°C)
+    tempEl.classList.add('temp-normal');
   }
 }
 
@@ -440,44 +455,60 @@ function carregarTempsSeva() {
     }).catch(function(err){});
 }
 
-/* Gestió de la Roda Dentada (Compatibilitat iPad / Tàctil i Ratolí) */
-function mostrarBotoConfiguracio() {
+/* Gestió dels controls visuals en tocar la pantalla (<, > i ⚙️) */
+function mostrarControlsUI() {
   btnSettings.classList.add('visible');
+  btnPrev.classList.add('visible');
+  btnNext.classList.add('visible');
   
-  if (hideSettingsTimer) clearTimeout(hideSettingsTimer);
+  if (hideControlsTimer) clearTimeout(hideControlsTimer);
   
-  hideSettingsTimer = setTimeout(function() {
+  hideControlsTimer = setTimeout(function() {
     if (modalSettings.classList.contains('hidden')) {
       btnSettings.classList.remove('visible');
+      btnPrev.classList.remove('visible');
+      btnNext.classList.remove('visible');
     }
   }, 4000);
 }
 
 function onPantallaTocada(e) {
-  if (!modalSettings.contains(e.target) && !btnSettings.contains(e.target)) {
-    mostrarBotoConfiguracio();
+  if (!modalSettings.contains(e.target) && 
+      !btnSettings.contains(e.target) && 
+      !btnPrev.contains(e.target) && 
+      !btnNext.contains(e.target)) {
+    mostrarControlsUI();
   }
 }
 
-// Escoltadors d'esdeveniments per a acció tàctil (iPad) i clic de ratolí
 document.body.addEventListener('touchstart', onPantallaTocada, { passive: true });
 document.body.addEventListener('click', onPantallaTocada);
 
-// Obrir Modal
+// Navegació Manual
+btnPrev.addEventListener('click', function(e) {
+  e.stopPropagation();
+  canviarImatgeFons(-1);
+  iniciarTemporitzador();
+});
+
+btnNext.addEventListener('click', function(e) {
+  e.stopPropagation();
+  canviarImatgeFons(1);
+  iniciarTemporitzador();
+});
+
+// Modal Configuració
 function obrirModal(e) {
   if (e) e.stopPropagation();
   modalSettings.classList.remove('hidden');
 }
 
-btnSettings.addEventListener('touchstart', function(e) {
-  e.stopPropagation();
-  obrirModal(e);
-}, { passive: true });
 btnSettings.addEventListener('click', obrirModal);
 
-// Tancar Modal i desar canvis
 function tancarModal() {
-  config.speed = rangeSpeed.value;
+  config.speedMinutes = rangeSpeed.value;
+  config.textSize = selectTextSize.value;
+  config.position = selectPosition.value;
   config.effect = selectEffect.value;
   config.brightness = rangeBrightness.value;
   config.showClock = chkClock.checked;
@@ -487,16 +518,19 @@ function tancarModal() {
   aplicarConfiguracio();
   modalSettings.classList.add('hidden');
   btnSettings.classList.remove('visible');
+  btnPrev.classList.remove('visible');
+  btnNext.classList.remove('visible');
 }
 
 btnCloseSettings.addEventListener('click', tancarModal);
 
 /* Inicialització */
 barrejarFotos(imatges);
+precarrregarImatges();
+canviarImatgeFons(0);
 actualitzaRellotge();
 carregarTempsSeva();
 carregarConfiguracio();
-canviarImatgeFons();
 
 setInterval(actualitzaRellotge, 1000);
 setInterval(carregarTempsSeva, 900000);
