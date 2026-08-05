@@ -247,7 +247,7 @@ var chkClock = document.getElementById('chk-clock');
 var chkDate = document.getElementById('chk-date');
 var chkWeather = document.getElementById('chk-weather');
 
-/* Configuració per defecte (120 segons = 2 minuts) */
+/* Configuració per defecte */
 var config = {
   speed: 120,
   effect: 'fade',
@@ -303,16 +303,26 @@ rangeSpeed.addEventListener('input', function() {
   speedVal.textContent = formatTempsText(this.value);
 });
 
-/* Aplicar la configuració a la pantalla */
+/* Aplicar la configuració a la pantalla amb comprovació de Mode Nit */
 function aplicarConfiguracio() {
   // 1. Mostrar/Amagar elements
   clockEl.style.display = config.showClock ? 'block' : 'none';
   dateEl.style.display = config.showDate ? 'block' : 'none';
   weatherBox.style.display = config.showWeather ? 'flex' : 'none';
 
-  // 2. Intensitat de llum / Brillantor
-  var opacitatFosca = (100 - config.brightness) / 100;
-  brightnessOverlay.style.opacity = opacitatFosca;
+  // 2. Mode Nit (00:00h - 06:00h) o Brillantor personalitzada
+  var ara = new Date();
+  var hora = ara.getHours();
+  var esModeNit = hora >= 0 && hora < 6;
+
+  if (esModeNit) {
+    // Mode Nit: atenuació automàtica al 20% de llum (0.80 d'opacitat fosca overlay)
+    brightnessOverlay.style.opacity = 0.80;
+  } else {
+    // Mode normal segons l'ajust de l'usuari
+    var opacitatFosca = (100 - config.brightness) / 100;
+    brightnessOverlay.style.opacity = opacitatFosca;
+  }
 
   // 3. Efectes de transició
   document.body.className = 'effect-' + config.effect;
@@ -383,9 +393,12 @@ function actualitzaRellotge() {
   clockEl.textContent = h + ':' + m;
 
   dateEl.textContent = formatarDataCatalana(ara);
+  
+  // Re-aplicar configuració per actualitzar el Mode Nit si canvia d'hora
+  aplicarConfiguracio();
 }
 
-/* Temps Seva */
+/* Temps Seva i Color segons Temperatura */
 function getIconaTemps(code) {
   if (code === 0) return '☀️';
   if (code >= 1 && code <= 3) return '⛅';
@@ -395,6 +408,20 @@ function getIconaTemps(code) {
   if (code >= 80 && code <= 82) return '🌦️';
   if (code >= 95) return '⛈️';
   return '🌡️';
+}
+
+function aplicarColorTemperatura(temp) {
+  tempEl.classList.remove('temp-cold', 'temp-normal', 'temp-hot', 'temp-extreme-hot');
+  
+  if (temp <= 12) {
+    tempEl.classList.add('temp-cold');        // Blau: Fred (<= 12°C)
+  } else if (temp >= 35) {
+    tempEl.classList.add('temp-extreme-hot'); // Vermell: Molta calor (>= 35°C)
+  } else if (temp >= 25) {
+    tempEl.classList.add('temp-hot');         // Taronja: Calor (25°C - 34°C)
+  } else {
+    tempEl.classList.add('temp-normal');      // Verd: Normal (13°C - 24°C)
+  }
 }
 
 function carregarTempsSeva() {
@@ -408,11 +435,12 @@ function carregarTempsSeva() {
         var weatherCode = data.current_weather.weathercode;
         tempEl.textContent = temp + "°C";
         weatherIconEl.textContent = getIconaTemps(weatherCode);
+        aplicarColorTemperatura(temp);
       }
     }).catch(function(err){});
 }
 
-/* Gestió de la Roda Dentada al tocar la pantalla */
+/* Gestió de la Roda Dentada (Compatibilitat iPad / Tàctil i Ratolí) */
 function mostrarBotoConfiguracio() {
   btnSettings.classList.add('visible');
   
@@ -425,20 +453,30 @@ function mostrarBotoConfiguracio() {
   }, 4000);
 }
 
-document.body.addEventListener('click', function(e) {
-  if (!modalSettings.contains(e.target)) {
+function onPantallaTocada(e) {
+  if (!modalSettings.contains(e.target) && !btnSettings.contains(e.target)) {
     mostrarBotoConfiguracio();
   }
-});
+}
+
+// Escoltadors d'esdeveniments per a acció tàctil (iPad) i clic de ratolí
+document.body.addEventListener('touchstart', onPantallaTocada, { passive: true });
+document.body.addEventListener('click', onPantallaTocada);
 
 // Obrir Modal
-btnSettings.addEventListener('click', function(e) {
-  e.stopPropagation();
+function obrirModal(e) {
+  if (e) e.stopPropagation();
   modalSettings.classList.remove('hidden');
-});
+}
+
+btnSettings.addEventListener('touchstart', function(e) {
+  e.stopPropagation();
+  obrirModal(e);
+}, { passive: true });
+btnSettings.addEventListener('click', obrirModal);
 
 // Tancar Modal i desar canvis
-btnCloseSettings.addEventListener('click', function() {
+function tancarModal() {
   config.speed = rangeSpeed.value;
   config.effect = selectEffect.value;
   config.brightness = rangeBrightness.value;
@@ -449,7 +487,9 @@ btnCloseSettings.addEventListener('click', function() {
   aplicarConfiguracio();
   modalSettings.classList.add('hidden');
   btnSettings.classList.remove('visible');
-});
+}
+
+btnCloseSettings.addEventListener('click', tancarModal);
 
 /* Inicialització */
 barrejarFotos(imatges);
