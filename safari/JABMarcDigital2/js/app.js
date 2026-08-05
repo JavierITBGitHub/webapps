@@ -416,9 +416,12 @@ function actualitzaRellotge() {
   actualitzaBrillantor();
 }
 
-function getIconaTemps(code) {
-  if (code === 0) return '☀️';
-  if (code >= 1 && code <= 3) return '⛅';
+/* Retorna la icona del temps avaluant si és dia (isDay = 1) o nit (isDay = 0) */
+function getIconaTemps(code, isDay) {
+  var esNit = (isDay === 0);
+
+  if (code === 0) return esNit ? '🌙' : '☀️';
+  if (code >= 1 && code <= 3) return esNit ? '☁️🌙' : '⛅';
   if (code >= 45 && code <= 48) return '🌫️';
   if (code >= 51 && code <= 67) return '🌧️';
   if (code >= 71 && code <= 77) return '❄️';
@@ -442,8 +445,11 @@ function carregarTempsSeva() {
     .then(function(data) {
       if (data && data.current_weather) {
         var temp = Math.round(data.current_weather.temperature);
+        var code = data.current_weather.weathercode;
+        var isDay = data.current_weather.is_day; // Open-Meteo retorna 1 per dia i 0 per nit
+
         tempEl.textContent = temp + "°C";
-        weatherIconEl.textContent = getIconaTemps(data.current_weather.weathercode);
+        weatherIconEl.textContent = getIconaTemps(code, isDay);
         aplicarColorTemperatura(temp);
       }
     }).catch(function(){});
