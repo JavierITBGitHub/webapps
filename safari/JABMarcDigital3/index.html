@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Marc Digital - ARTE</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Capes per a la transició d'imatges -->
+  <div id="bg-layer-1" class="bg-layer active"></div>
+  <div id="bg-layer-2" class="bg-layer"></div>
+
+  <!-- Capes d'efectes visuals -->
+  <div id="brightness-overlay"></div>
+  <div class="scrim-overlay"></div>
+
+  <!-- Widget d'informació (Hora, Data i Temps) -->
+  <div class="widget-container">
+    <div id="weather-box" class="weather-row">
+      <span id="weather-icon">☀️</span>
+      <span id="temp-val">--°C</span>
+    </div>
+    <div id="clock-digital">00:00</div>
+    <div id="date-val">Carregant data...</div>
+  </div>
+
+  <!-- Botons de navegació tàctil -->
+  <button id="btn-prev" class="nav-btn left-btn" aria-label="Foto anterior">&#10094;</button>
+  <button id="btn-next" class="nav-btn right-btn" aria-label="Foto següent">&#10095;</button>
+
+  <!-- Botó d'accés a la configuració -->
+  <button id="btn-settings" class="settings-btn" aria-label="Configuració">&#9881;</button>
+
+  <!-- Modal de Configuració -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h2>Ajustos del Marc Digital (v3.0)</h2>
+
+      <!-- Nova secció: Pujada de Fotos al Servidor -->
+      <div class="config-group">
+        <label>Pujar fotos al servidor:</label>
+        <input type="file" id="input-upload-photos" accept="image/*" multiple style="display:none;">
+        <button type="button" id="btn-upload" class="btn-close" style="background:#28a745; margin-top:5px; width:100%;">
+          📁 Seleccionar i carregar al servidor
+        </button>
+        <small id="upload-status" style="display:block; margin-top:5px; color:#aaa;"></small>
+      </div>
+
+      <!-- Temporitzador de 0 a 120 minuts (2h) -->
+      <div class="config-group">
+        <label for="range-speed">Temps entre fotos: <strong id="speed-val">2 minuts</strong></label>
+        <input type="range" id="range-speed" min="0" max="120" step="1" value="2">
+      </div>
+
+      <div class="config-group">
+        <label for="select-text-size">Mida del text:</label>
+        <select id="select-text-size">
+          <option value="normal">Normal</option>
+          <option value="large">Gran (+25%)</option>
+          <option value="xlarge">Molt Gran (+50%)</option>
+        </select>
+      </div>
+
+      <div class="config-group">
+        <label for="select-position">Posició del widget:</label>
+        <select id="select-position">
+          <option value="bottom-right">A baix a la dreta</option>
+          <option value="bottom-left">A baix a l'esquerra</option>
+          <option value="top-right">A dalt a la dreta</option>
+          <option value="top-left">A dalt a l'esquerra</option>
+        </select>
+      </div>
+
+      <div class="config-group">
+        <label for="select-effect">Efecte de transició:</label>
+        <select id="select-effect">
+          <option value="fade">Fundit suau</option>
+          <option value="zoom">Fundit amb Zoom</option>
+          <option value="none">Sense efecte</option>
+        </select>
+      </div>
+
+      <div class="config-group">
+        <label for="range-brightness">Brillantor de la pantalla:</label>
+        <input type="range" id="range-brightness" min="20" max="100" value="100">
+      </div>
+
+      <div class="config-group checkbox-list">
+        <label><input type="checkbox" id="chk-clock" checked> Mostrar rellotge</label>
+        <label><input type="checkbox" id="chk-date" checked> Mostrar data</label>
+        <label><input type="checkbox" id="chk-weather" checked> Mostrar temps (Seva)</label>
+      </div>
+
+      <button id="btn-close-settings" class="btn-close">Guardar i tancar</button>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
