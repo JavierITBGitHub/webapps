@@ -1,4 +1,4 @@
-/* Llista d'imatges */
+/* Llista completa d'imatges del Marc Digital (161 fotos) */
 var imatges = [
   'img/9eMes_SitgesFestaMajor-139.JPG',
   'img/2015NY-535.JPG',
@@ -221,84 +221,16 @@ var imatges = [
 
 var indexImatge = 0;
 var currentLayer = 1;
-var timerCanviFoto = null;
-var hideSettingsTimer = null;
+var TEMPS_CANVI_FOTO = 12000; // Canvia de foto cada 12 segons
 
-// Elements DOM
 var layer1 = document.getElementById('bg-layer-1');
 var layer2 = document.getElementById('bg-layer-2');
 var clockEl = document.getElementById('clock-digital');
 var dateEl = document.getElementById('date-val');
-var weatherBox = document.getElementById('weather-box');
 var tempEl = document.getElementById('temp-val');
 var weatherIconEl = document.getElementById('weather-icon');
-var brightnessOverlay = document.getElementById('brightness-overlay');
 
-// Elements de Configuració
-var btnSettings = document.getElementById('btn-settings');
-var modalSettings = document.getElementById('settings-modal');
-var btnCloseSettings = document.getElementById('btn-close-settings');
-
-var selectSpeed = document.getElementById('select-speed');
-var selectEffect = document.getElementById('select-effect');
-var rangeBrightness = document.getElementById('range-brightness');
-var chkClock = document.getElementById('chk-clock');
-var chkDate = document.getElementById('chk-date');
-var chkWeather = document.getElementById('chk-weather');
-
-/* Configuració per defecte */
-var config = {
-  speed: 12000,
-  effect: 'fade',
-  brightness: 100,
-  showClock: true,
-  showDate: true,
-  showWeather: true
-};
-
-/* Carregar Configuració des de LocalStorage */
-function carregarConfiguracio() {
-  var savedConfig = localStorage.getItem('marc_digital_config');
-  if (savedConfig) {
-    try {
-      config = JSON.parse(savedConfig);
-    } catch(e){}
-  }
-
-  // Aplicar valors als controls del menú
-  selectSpeed.value = config.speed;
-  selectEffect.value = config.effect;
-  rangeBrightness.value = config.brightness;
-  chkClock.checked = config.showClock;
-  chkDate.checked = config.showDate;
-  chkWeather.checked = config.showWeather;
-
-  aplicarConfiguracio();
-}
-
-/* Aplicar la configuració a la pantalla */
-function aplicarConfiguracio() {
-  // 1. Mostrar/Amagar elements
-  clockEl.style.display = config.showClock ? 'block' : 'none';
-  dateEl.style.display = config.showDate ? 'block' : 'none';
-  weatherBox.style.display = config.showWeather ? 'flex' : 'none';
-
-  // 2. Intensitat de llum / Brillantor
-  var opacitatFosca = (100 - config.brightness) / 100;
-  brightnessOverlay.style.opacity = opacitatFosca;
-
-  // 3. Efectes de transició
-  document.body.className = 'effect-' + config.effect;
-
-  // 4. Temporitzador de canvi de foto
-  if (timerCanviFoto) clearInterval(timerCanviFoto);
-  timerCanviFoto = setInterval(canviarImatgeFons, parseInt(config.speed));
-
-  // Desar
-  localStorage.setItem('marc_digital_config', JSON.stringify(config));
-}
-
-/* Barrejar Fotos */
+/* Funció per barrejar les fotos de manera aleatòria */
 function barrejarFotos(array) {
   for (var i = array.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
@@ -308,7 +240,7 @@ function barrejarFotos(array) {
   }
 }
 
-/* Transició de fotos */
+/* 1. Passada de diapositives amb transició creuada */
 function canviarImatgeFons() {
   if (!imatges || imatges.length === 0) return;
 
@@ -328,9 +260,10 @@ function canviarImatgeFons() {
   }
 }
 
-/* Rellotge i Data */
+/* 2. Rellotge i Data */
 function actualitzaRellotge() {
   var ara = new Date();
+  
   var h = ara.getHours();
   var m = ara.getMinutes();
   h = h < 10 ? '0' + h : h;
@@ -339,14 +272,7 @@ function actualitzaRellotge() {
 
   var opcionsData = { weekday: 'long', day: 'numeric', month: 'long' };
   try {
-    // Formatat en català
-    var dataText = ara.toLocaleDateString('ca-ES', opcionsData);
-    
-    // Assegura que "d'agost" o "de ..." no contenguin majúscules no desitjades
-    // Primera lletra del dia en majúscula i la resta en minúscula
-    dataText = dataText.charAt(0).toUpperCase() + dataText.slice(1).toLowerCase();
-    
-    dateEl.textContent = dataText;
+    dateEl.textContent = ara.toLocaleDateString('ca-ES', opcionsData);
   } catch (e) {
     var dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
     var mesos = ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'];
@@ -354,7 +280,7 @@ function actualitzaRellotge() {
   }
 }
 
-/* Temps Seva */
+/* 3. Temps Open-Meteo Seva */
 function getIconaTemps(code) {
   if (code === 0) return '☀️';
   if (code >= 1 && code <= 3) return '⛅';
@@ -370,65 +296,30 @@ function carregarTempsSeva() {
   var url = "https://api.open-meteo.com/v1/forecast?latitude=41.8386&longitude=2.2743&current_weather=true";
 
   fetch(url)
-    .then(function(response) { return response.json(); })
+    .then(function(response) {
+      return response.json();
+    })
     .then(function(data) {
       if (data && data.current_weather) {
         var temp = Math.round(data.current_weather.temperature);
         var weatherCode = data.current_weather.weathercode;
+
         tempEl.textContent = temp + "°C";
         weatherIconEl.textContent = getIconaTemps(weatherCode);
       }
-    }).catch(function(err){});
+    })
+    .catch(function(err) {
+      console.log("Error carregant el temps:", err);
+    });
 }
-
-/* Gestió de la Roda Dentada al tocar la pantalla */
-function mostrarBotoConfiguracio() {
-  btnSettings.classList.add('visible');
-  
-  if (hideSettingsTimer) clearTimeout(hideSettingsTimer);
-  
-  // Amaga la roda dentada automàticament al cap de 4 segons d'inactivitat
-  hideSettingsTimer = setTimeout(function() {
-    if (modalSettings.classList.contains('hidden')) {
-      btnSettings.classList.remove('visible');
-    }
-  }, 4000);
-}
-
-// Mostrar la roda dentada quan es toca qualsevol lloc de la pantalla
-document.body.addEventListener('click', function(e) {
-  // Evitem que es dispari si s'està clicant dins del menú
-  if (!modalSettings.contains(e.target)) {
-    mostrarBotoConfiguracio();
-  }
-});
-
-// Obrir Modal
-btnSettings.addEventListener('click', function(e) {
-  e.stopPropagation();
-  modalSettings.classList.remove('hidden');
-});
-
-// Tancar Modal i desar canvis
-btnCloseSettings.addEventListener('click', function() {
-  config.speed = selectSpeed.value;
-  config.effect = selectEffect.value;
-  config.brightness = rangeBrightness.value;
-  config.showClock = chkClock.checked;
-  config.showDate = chkDate.checked;
-  config.showWeather = chkWeather.checked;
-
-  aplicarConfiguracio();
-  modalSettings.classList.add('hidden');
-  btnSettings.classList.remove('visible');
-});
 
 /* Inicialització */
 barrejarFotos(imatges);
 actualitzaRellotge();
 carregarTempsSeva();
-carregarConfiguracio();
 canviarImatgeFons();
 
+/* Rellotges i Timers */
 setInterval(actualitzaRellotge, 1000);
+setInterval(canviarImatgeFons, TEMPS_CANVI_FOTO);
 setInterval(carregarTempsSeva, 900000);

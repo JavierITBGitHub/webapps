@@ -239,22 +239,43 @@ var btnSettings = document.getElementById('btn-settings');
 var modalSettings = document.getElementById('settings-modal');
 var btnCloseSettings = document.getElementById('btn-close-settings');
 
-var selectSpeed = document.getElementById('select-speed');
+var rangeSpeed = document.getElementById('range-speed');
+var speedVal = document.getElementById('speed-val');
 var selectEffect = document.getElementById('select-effect');
 var rangeBrightness = document.getElementById('range-brightness');
 var chkClock = document.getElementById('chk-clock');
 var chkDate = document.getElementById('chk-date');
 var chkWeather = document.getElementById('chk-weather');
 
-/* Configuració per defecte */
+/* Configuració per defecte (120 segons = 2 minuts) */
 var config = {
-  speed: 12000,
+  speed: 120,
   effect: 'fade',
   brightness: 100,
   showClock: true,
   showDate: true,
   showWeather: true
 };
+
+/* Format text segons */
+function formatTempsText(segons) {
+  segons = parseInt(segons, 10);
+  if (segons === 0) return "Fixe (sense canvi)";
+  if (segons < 60) return segons + " segons";
+  
+  var minuts = Math.floor(segons / 60);
+  var segonsResta = segons % 60;
+  
+  if (minuts < 60) {
+    if (segonsResta === 0) return minuts + (minuts === 1 ? " minut" : " minuts");
+    return minuts + "m " + segonsResta + "s";
+  } else {
+    var hores = Math.floor(minuts / 60);
+    var minutsResta = minuts % 60;
+    if (minutsResta === 0) return hores + (hores === 1 ? " hora" : " hores");
+    return hores + "h " + minutsResta + "m";
+  }
+}
 
 /* Carregar Configuració des de LocalStorage */
 function carregarConfiguracio() {
@@ -266,7 +287,8 @@ function carregarConfiguracio() {
   }
 
   // Aplicar valors als controls del menú
-  selectSpeed.value = config.speed;
+  rangeSpeed.value = config.speed;
+  speedVal.textContent = formatTempsText(config.speed);
   selectEffect.value = config.effect;
   rangeBrightness.value = config.brightness;
   chkClock.checked = config.showClock;
@@ -275,6 +297,11 @@ function carregarConfiguracio() {
 
   aplicarConfiguracio();
 }
+
+/* Actualitzar text del lliscador en moure'l */
+rangeSpeed.addEventListener('input', function() {
+  speedVal.textContent = formatTempsText(this.value);
+});
 
 /* Aplicar la configuració a la pantalla */
 function aplicarConfiguracio() {
@@ -292,7 +319,11 @@ function aplicarConfiguracio() {
 
   // 4. Temporitzador de canvi de foto
   if (timerCanviFoto) clearInterval(timerCanviFoto);
-  timerCanviFoto = setInterval(canviarImatgeFons, parseInt(config.speed));
+  
+  var segons = parseInt(config.speed, 10);
+  if (segons > 0) {
+    timerCanviFoto = setInterval(canviarImatgeFons, segons * 1000);
+  }
 
   // Desar
   localStorage.setItem('marc_digital_config', JSON.stringify(config));
@@ -328,6 +359,20 @@ function canviarImatgeFons() {
   }
 }
 
+/* Formatar la data amb el mes en majúscula */
+function formatarDataCatalana(data) {
+  var dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
+  var mesos = ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Desembre'];
+  
+  var diaSetmana = dies[data.getDay()];
+  var diaMes = data.getDate();
+  var mesNom = mesos[data.getMonth()];
+  
+  var preposicio = (mesNom.startsWith('A') || mesNom.startsWith('O')) ? "d'" : "de ";
+  
+  return diaSetmana + ", " + diaMes + " " + preposicio + mesNom;
+}
+
 /* Rellotge i Data */
 function actualitzaRellotge() {
   var ara = new Date();
@@ -337,21 +382,7 @@ function actualitzaRellotge() {
   m = m < 10 ? '0' + m : m;
   clockEl.textContent = h + ':' + m;
 
-  var opcionsData = { weekday: 'long', day: 'numeric', month: 'long' };
-  try {
-    // Formatat en català
-    var dataText = ara.toLocaleDateString('ca-ES', opcionsData);
-    
-    // Assegura que "d'agost" o "de ..." no contenguin majúscules no desitjades
-    // Primera lletra del dia en majúscula i la resta en minúscula
-    dataText = dataText.charAt(0).toUpperCase() + dataText.slice(1).toLowerCase();
-    
-    dateEl.textContent = dataText;
-  } catch (e) {
-    var dies = ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Dissabte'];
-    var mesos = ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'];
-    dateEl.textContent = dies[ara.getDay()] + ', ' + ara.getDate() + ' de ' + mesos[ara.getMonth()];
-  }
+  dateEl.textContent = formatarDataCatalana(ara);
 }
 
 /* Temps Seva */
@@ -387,7 +418,6 @@ function mostrarBotoConfiguracio() {
   
   if (hideSettingsTimer) clearTimeout(hideSettingsTimer);
   
-  // Amaga la roda dentada automàticament al cap de 4 segons d'inactivitat
   hideSettingsTimer = setTimeout(function() {
     if (modalSettings.classList.contains('hidden')) {
       btnSettings.classList.remove('visible');
@@ -395,9 +425,7 @@ function mostrarBotoConfiguracio() {
   }, 4000);
 }
 
-// Mostrar la roda dentada quan es toca qualsevol lloc de la pantalla
 document.body.addEventListener('click', function(e) {
-  // Evitem que es dispari si s'està clicant dins del menú
   if (!modalSettings.contains(e.target)) {
     mostrarBotoConfiguracio();
   }
@@ -411,7 +439,7 @@ btnSettings.addEventListener('click', function(e) {
 
 // Tancar Modal i desar canvis
 btnCloseSettings.addEventListener('click', function() {
-  config.speed = selectSpeed.value;
+  config.speed = rangeSpeed.value;
   config.effect = selectEffect.value;
   config.brightness = rangeBrightness.value;
   config.showClock = chkClock.checked;

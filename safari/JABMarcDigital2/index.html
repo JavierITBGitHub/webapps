@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Marc Digital - Seva</title>
+  
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Marc Digital">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="img/icona-ipad.png">
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Capes per a les fotos -->
+  <div id="bg-layer-1" class="bg-layer active"></div>
+  <div id="bg-layer-2" class="bg-layer"></div>
+
+  <!-- Capa per controlar la intensitat de la llum (brillantor) -->
+  <div id="brightness-overlay"></div>
+
+  <!-- Ombra inferior per llegibilitat -->
+  <div class="scrim-overlay"></div>
+
+  <!-- Widget de Temps, Hora i Data -->
+  <div class="widget-container">
+    <div id="weather-box" class="weather-row">
+      <span id="weather-icon">☀️</span>
+      <span id="temp-val">--°C</span>
+    </div>
+    <div id="clock-digital">00:00</div>
+    <div id="date-val">carregant data...</div>
+  </div>
+
+  <!-- Botó Roda Dentada (Configuració) -->
+  <button id="btn-settings" class="settings-btn" aria-label="Configuració">⚙️</button>
+
+  <!-- Finestra Modal de Configuració -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h2>⚙️ Configuració</h2>
+      
+      <!-- Temps de transició (Lliscador 0 - 3600 segons) -->
+      <div class="config-group">
+        <label for="range-speed">Temps entre fotos: <strong id="speed-val">2 minuts</strong></label>
+        <input type="range" id="range-speed" min="0" max="3600" step="1" value="120">
+      </div>
+
+      <!-- Efecte de transició -->
+      <div class="config-group">
+        <label for="select-effect">Efecte de transició:</label>
+        <select id="select-effect">
+          <option value="fade" selected>Dissoldre (Fade)</option>
+          <option value="zoom">Zoom suau</option>
+          <option value="none">Sense efecte (Directe)</option>
+        </select>
+      </div>
+
+      <!-- Intensitat de Llum / Brillantor -->
+      <div class="config-group">
+        <label for="range-brightness">Intensitat de llum / Brillantor:</label>
+        <input type="range" id="range-brightness" min="20" max="100" value="100">
+      </div>
+
+      <!-- Elements a mostrar -->
+      <div class="config-group">
+        <label>Elements en pantalla:</label>
+        <div class="checkbox-list">
+          <label><input type="checkbox" id="chk-clock" checked> Hora digital</label>
+          <label><input type="checkbox" id="chk-date" checked> Data i dia de la setmana</label>
+          <label><input type="checkbox" id="chk-weather" checked> Temperatura i temps</label>
+        </div>
+      </div>
+
+      <button id="btn-close-settings" class="btn-close">Tancar i Desar</button>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
