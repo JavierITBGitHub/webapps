@@ -15,7 +15,7 @@ html, body {
   color: #ffffff;
 }
 
-/* Capes de fons per a la transició suau d'imatges */
+/* Capes de fons */
 .bg-layer {
   position: absolute;
   top: 0;
@@ -26,16 +26,54 @@ html, body {
   background-position: center center;
   background-repeat: no-repeat;
   opacity: 0;
+  z-index: 1;
+  -webkit-transition: opacity 2s ease-in-out, -webkit-transform 2s ease-in-out;
+  transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+}
+
+/* EFECTES DE TRANSICIÓ */
+/* 1. Fade (Defecte) */
+.effect-fade .bg-layer {
   -webkit-transition: opacity 2s ease-in-out;
   transition: opacity 2s ease-in-out;
-  z-index: 1;
+}
+
+/* 2. Zoom */
+.effect-zoom .bg-layer {
+  -webkit-transform: scale(1.08);
+  transform: scale(1.08);
+  -webkit-transition: opacity 2s ease-in-out, -webkit-transform 3s ease-out;
+  transition: opacity 2s ease-in-out, transform 3s ease-out;
+}
+.effect-zoom .bg-layer.active {
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+/* 3. Directe / Sense efecte */
+.effect-none .bg-layer {
+  -webkit-transition: none !important;
+  transition: none !important;
 }
 
 .bg-layer.active {
   opacity: 1;
 }
 
-/* Gradiant fosc a la zona inferior per garantir lectura de text */
+/* Capa per al control de brillantor / intensitat de llum */
+#brightness-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0; /* 0 = 100% brillantor, 0.8 = 20% brillantor */
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Gradient fosc inferior */
 .scrim-overlay {
   position: absolute;
   bottom: 0;
@@ -44,20 +82,19 @@ html, body {
   height: 50%;
   background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
   background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
 }
 
-/* Contenidor de l'Hora i el Temps (estil Google Nest Hub) */
+/* Widget Info */
 .widget-container {
   position: absolute;
   bottom: 6vw;
   left: 6vw;
-  z-index: 3;
+  z-index: 4;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
-/* El Temps */
 .weather-row {
   display: -webkit-box;
   display: -webkit-flex;
@@ -76,7 +113,6 @@ html, body {
   font-size: 2.5vw;
 }
 
-/* Hora Digital */
 #clock-digital {
   font-size: 11vw;
   font-weight: 300;
@@ -87,7 +123,6 @@ html, body {
   font-feature-settings: "tnum";
 }
 
-/* Data */
 #date-val {
   font-size: 2vw;
   font-weight: 400;
@@ -96,23 +131,132 @@ html, body {
   text-transform: capitalize;
 }
 
-/* Adaptació per a pantalles en mode Vertical (Portrait) */
+/* BOTÓ RODA DENTADA */
+.settings-btn {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 28px;
+  padding: 10px 14px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease;
+  backdrop-filter: blur(5px);
+}
+
+.settings-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* FINESTRA MODAL CONFIGURACIÓ */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 20;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-content {
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  padding: 30px;
+  width: 90%;
+  max-width: 450px;
+  color: #fff;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.config-group {
+  margin-bottom: 20px;
+}
+
+.config-group label {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  color: #ddd;
+}
+
+.config-group select, .config-group input[type="range"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: #2c2c2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+}
+
+.checkbox-list label {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.btn-close {
+  width: 100%;
+  padding: 12px;
+  background: #0a84ff;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-close:active {
+  background: #0066cc;
+}
+
+/* Mode Vertical */
 @media (orientation: portrait) {
-  .widget-container {
-    bottom: 8vh;
-    left: 8vh;
-  }
-  .weather-row {
-    font-size: 4vw;
-  }
-  #weather-icon {
-    font-size: 4.5vw;
-  }
-  #clock-digital {
-    font-size: 20vw;
-  }
-  #date-val {
-    font-size: 3.5vw;
-    margin-top: 2vw;
-  }
+  .widget-container { bottom: 8vh; left: 8vh; }
+  .weather-row { font-size: 4vw; }
+  #weather-icon { font-size: 4.5vw; }
+  #clock-digital { font-size: 20vw; }
+  #date-val { font-size: 3.5vw; margin-top: 2vw; }
 }
