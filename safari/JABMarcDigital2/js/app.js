@@ -1,4 +1,4 @@
-/* Llista d'imatges */
+/* Llista d'imatges OK */
 var imatges = [
   'img/9eMes_SitgesFestaMajor-139.JPG',
   'img/2015NY-535.JPG',

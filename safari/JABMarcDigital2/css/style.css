@@ -82,7 +82,7 @@ html, body {
   pointer-events: none;
 }
 
-/* WIDGET CONTAINER & ALINEACIÓ DRETA PER DEFECTE */
+/* WIDGET CONTAINER & ALINEACIÓ DRETA PER DEFECTE OK */
 .widget-container {
   position: absolute;
   z-index: 4;

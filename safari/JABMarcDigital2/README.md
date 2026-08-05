@@ -1,4 +1,4 @@
-# Marc Digital de Fotos - ARTE 🖼️⏰
+# Marc Digital de Fotos -- ARTE 🖼️⏰
 
 Un marc digital de fotos interactiu dissenyat per a tauletes (com iPad) o pantalles dedicades. Mostra una galeria de fotos en pantalla completa amb transicions fluides, precàrrega d'imatges i informació en temps real sobre l'hora, la data i el temps meteorològic de Seva.
 
