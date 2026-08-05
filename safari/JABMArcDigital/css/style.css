@@ -1,0 +1,118 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  overflow: hidden;
+  position: fixed;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #ffffff;
+}
+
+/* Capes de fons per a la transició suau d'imatges */
+.bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  -webkit-transition: opacity 2s ease-in-out;
+  transition: opacity 2s ease-in-out;
+  z-index: 1;
+}
+
+.bg-layer.active {
+  opacity: 1;
+}
+
+/* Gradiant fosc a la zona inferior per garantir lectura de text */
+.scrim-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
+  background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Contenidor de l'Hora i el Temps (estil Google Nest Hub) */
+.widget-container {
+  position: absolute;
+  bottom: 6vw;
+  left: 6vw;
+  z-index: 3;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* El Temps */
+.weather-row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  font-size: 2.2vw;
+  font-weight: 500;
+  margin-bottom: 0.2vw;
+  opacity: 0.95;
+}
+
+#weather-icon {
+  margin-right: 0.6vw;
+  font-size: 2.5vw;
+}
+
+/* Hora Digital */
+#clock-digital {
+  font-size: 11vw;
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-feature-settings: "tnum";
+  font-feature-settings: "tnum";
+}
+
+/* Data */
+#date-val {
+  font-size: 2vw;
+  font-weight: 400;
+  margin-top: 1vw;
+  opacity: 0.85;
+  text-transform: capitalize;
+}
+
+/* Adaptació per a pantalles en mode Vertical (Portrait) */
+@media (orientation: portrait) {
+  .widget-container {
+    bottom: 8vh;
+    left: 8vh;
+  }
+  .weather-row {
+    font-size: 4vw;
+  }
+  #weather-icon {
+    font-size: 4.5vw;
+  }
+  #clock-digital {
+    font-size: 20vw;
+  }
+  #date-val {
+    font-size: 3.5vw;
+    margin-top: 2vw;
+  }
+}
