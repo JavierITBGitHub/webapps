@@ -1,0 +1,122 @@
+/* css/style.css - v9.0 */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+svg#clock-svg {
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    background-color: #000000;
+    transition: opacity 0.3s ease;
+}
+
+/* MARQUES DE MINUTS/HORES */
+.mark {
+    stroke: #444444;
+    stroke-width: 3;
+    stroke-linecap: round;
+    transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.mark.major {
+    stroke: #777777;
+    stroke-width: 5;
+}
+
+.mark.active {
+    stroke: #ffffff;
+    stroke-width: 8;
+    filter: url(#minuteGlow);
+}
+
+/* NÚMEROS DE LES HORES */
+.number {
+    fill: #ffffff;
+    font-size: 82px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+    transition: fill 0.2s ease, font-size 0.2s ease;
+}
+
+.number.active-num {
+    fill: #00ffcc;
+    font-size: 96px;
+    font-weight: 900;
+}
+
+/* TEXTOS INTERIORS */
+#brand {
+    fill: #ffffff;
+    font-size: 42px;
+    font-weight: 600;
+    letter-spacing: 5px;
+    text-anchor: middle;
+    dominant-baseline: central;
+    opacity: 0.9;
+}
+
+#temp {
+    fill: #ffffff;
+    font-size: 68px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+    transition: fill 0.5s ease;
+}
+
+#date {
+    fill: #cccccc;
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+/* COLORS SEGONS LA TEMPERATURA */
+.temp-glaç { fill: #00d2ff !important; }  /* <= 0°C (Blau cel/Glaç) */
+.temp-fred { fill: #4facfe !important; }  /* 1°C a 12°C (Blau) */
+.temp-suau { fill: #ffffff !important; }  /* 13°C a 23°C (Blanc) */
+.temp-calor { fill: #ff9900 !important; } /* 24°C a 32°C (Taronja) */
+.temp-extrem { fill: #ff0055 !important; }/* > 32°C (Vermell/Rosa intens) */
+
+/* MANETES DEL RELLOTGE */
+.h-hand-main {
+    fill: #ffffff;
+    stroke: #222222;
+    stroke-width: 2;
+}
+
+.h-hand-nerve {
+    stroke: #dddddd;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.m-hand-main {
+    fill: #ffffff;
+    stroke: #222222;
+    stroke-width: 2;
+}
+
+#s-hand {
+    stroke: #ff0000;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JABAnalogClockRectangular9</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="JABitxu Clock">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link rel="apple-touch-icon" href="img/icona-ipad.png">
+    <link rel="stylesheet" href="css/style.css?v=9.0">
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('js/sw.js?v=9.0', { scope: './' }).catch(function(){});
+        });
+      }
+    </script>
+</head>
+<body>
+
+<svg id="clock-svg"
+     viewBox="-666.5 -500 1333 1000"
+     preserveAspectRatio="xMidYMid meet">
+
+    <defs>
+        <filter id="minuteGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <g id="marks"></g>
+    <g id="numbers"></g>
+
+    <!-- 1. Marca -->
+    <text id="brand" y="-180">JABitxu</text>
+    
+    <!-- 2. Temperatura -->
+    <text id="temp" y="160">--°C</text>
+
+    <!-- 3. Data -->
+    <text id="date" y="230">----</text>
+
+    <!-- 4. Fase Lunar Astronòmica -->
+    <g id="moon-group" transform="translate(0, 300)">
+        <circle cx="0" cy="0" r="22.5" fill="#ffffff" stroke="#555555" stroke-width="1.5"/>
+        
+        <g id="moon-craters" fill="#d0d0d0" opacity="0.6">
+            <circle cx="-7" cy="-6" r="4.5" />
+            <circle cx="6" cy="8" r="3.5" />
+            <circle cx="-8" cy="10" r="2.5" />
+            <circle cx="9" cy="-7" r="3" />
+            <circle cx="1" cy="-12" r="2" />
+        </g>
+        
+        <path id="moon-phase" fill="#111111" opacity="0.92" d="" />
+    </g>
+
+    <!-- Manetes -->
+    <g id="h-hand-group">
+        <path class="h-hand-main" d="M -7 30 L -7 -230 L 0 -250 L 7 -230 L 7 30 Z" />
+        <line class="h-hand-nerve" x1="0" y1="20" x2="0" y2="-220" />
+    </g>
+    
+    <g id="m-hand-group">
+        <polygon class="m-hand-main" points="-4,30 -4,-360 0,-385 4,-360 4,30" />
+    </g>
+    
+    <line id="s-hand" x1="0" y1="40" x2="0" y2="-420" />
+    <circle cx="0" cy="0" r="8" fill="#ff0000"/>
+
+</svg>
+
+<script src="js/clock.js?v=9.0"></script>
+</body>
+</html>
