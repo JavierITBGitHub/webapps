@@ -1,30 +1,45 @@
-# 🖼️ Marc Digital de Fotos (Seva)
+# Marc Digital de Fotos - ARTE 🖼️⏰
 
-**Versió:** 2.1  
-**Data d'actualització:** 5 d'agost de 2026  
-
-Un marc de fotos digital modern, elegant i personalitzable dissenyat principalment per a tauletes (com iPad) o pantalles dedicades. Inclou la visualització de fotos de manera aleatòria, informació en temps real (rellotge, data i temps meteo) i un panell de configuració accessible al tocar la pantalla.
+Un marc digital de fotos interactiu dissenyat principalment per a tauletes (com iPad) o pantalles dedicades. Mostra una galeria de fotos en pantalla completa amb transicions personalitzables, informació en temps real sobre l'hora, la data i el temps meteorològic de Seva.
 
 ---
 
-## ✨ Funcionalitats Principals
+## 🌟 Característiques Principals
 
-### 📸 Visualitzador de Fotos
-* **Barreja Aleatòria (Shuffle):** Cada cop que s'inicia l'aplicació, la llista d'imatges es barreja automàticament.
-* **Transició Creuada Suau:** Canvi de foto sense fons en blanc ni parpellejos.
-* **Efectes de Transició Configurables:** Permet triar entre diferents estils visuals (*Fade*, *Zoom suau* o *Canvi directe*).
-* **Temporitzador Ajustable per Lliscador:** Interval personalitzable de 0 (Fixe) a 3600 segons (1 hora), establert per defecte en 120 segons (2 minuts).
+- **Galeria de Fotos Dinàmica:**
+  - Carrega i barreja aleatòriament les imatges a cada inici.
+  - Canvi automàtic de fotos amb temps configurable (de 0s/fixe fins a 1 hora).
+  - Efectes de transició a escollir: **Dissoldre (Fade)**, **Zoom suau** o **Directe (sense efecte)**.
 
-### 🕒 Widget d'Informació en Temps Real
-* **Rellotge Digital:** Hora actualitzada segon a segon en format gran i llegible.
-* **Data i Dia:** Data en català amb el mes en majúscula (*ex: Dimecres, 5 d'Agost*).
-* **Informació Meteo (Open-Meteo API):** Temperatura actual i icona del temps en temps real basats en les coordenades geogràfiques de Seva.
+- **Informació en Pantalla (Widget):**
+  - **Rellotge Digital:** Hora actual en format gran i llegible.
+  - **Data en Català:** Dia de la setmana i mes amb format correcte (ex: *Dimecres, 5 d'Agost*).
+  - **Temps a Seva (Open-Meteo API):** Icona del clima i temperatura actualitzada cada 15 minuts.
+  - **Color per Temperatura:**
+    - 🔵 **Blau** ($\le 12\text{ °C}$): Fred
+    - 🟢 **Verd** ($13\text{ °C} - 24\text{ °C}$): Normal / Temperat
+    - 🟠 **Taronja** ($25\text{ °C} - 34\text{ °C}$): Calor
+    - 🔴 **Vermell** ($\ge 35\text{ °C}$): Molta calor
 
-### ⚙️ Panell de Configuració Interactiu
-* **Accés Tàctil (Roda Dentada):** En tocar qualsevol punt de la pantalla, apareix un botó de configuració (⚙️) que s'amaga automàticament al cap de 4 segons d'inactivitat.
-* **Control de Brillantor / Intensitat de Llum:** Regulació de la brillantor de la pantalla mitjançant un lliscador (*slider*).
-* **Personalització d'Elements Visuals:** Selector per mostrar o amagar de forma independent:
-  * ⏰ Hora digital
-  * 📅 Data i dia de la setmana
-  * 🌡️ Temperatura i temps
-* **Persistència de Dades:** Tota la configuració es desa automàticament al navegador (`localStorage`).
+- **Control de Brillantor i Mode Nit:**
+  - Control d'intensitat de la llum manual mitjançant un lliscador de brillantor.
+  - **Mode Nit Automàtic:** Atenuació automàtica de la pantalla al 20% de llum entre les **00:00h i les 06:00h**.
+
+- **Interfície Adaptativa i Tàctil (iPad):**
+  - **Menu de Configuració Amagat:** La roda dentada ⚙️ apareix en **tocar qualsevol punt de la pantalla** (o moure el ratolí) i s'amaga automàticament passats 4 segons.
+  - Responsive per a pantalles horitzontals i verticals (mode *Portrait* i *Landscape*).
+  - Disseny d'estil iOS WebApp (pila d'icones i suport per a pantalla completa).
+
+---
+
+## 📁 Estructura del Projecte
+
+```text
+marc-digital/
+├── index.html         # Estructura HTML5 i modal de configuració
+├── css/
+│   └── style.css      # Estils, disseny responsive, colors de temp i transicions
+├── js/
+│   └── app.js         # Llogica del rellotge, clima, galeria, configuració i esdeveniments tàctils
+├── img/               # Carpeta amb les imatges de la galeria (.jpg, .png, .gif)
+└── README.md          # Documentació del projecte
