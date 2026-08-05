@@ -27,21 +27,21 @@ html, body {
   background-repeat: no-repeat;
   opacity: 0;
   z-index: 1;
-  -webkit-transition: opacity 2s ease-in-out, -webkit-transform 2s ease-in-out;
-  transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+  -webkit-transition: opacity 1.8s ease-in-out, -webkit-transform 1.8s ease-in-out;
+  transition: opacity 1.8s ease-in-out, transform 1.8s ease-in-out;
 }
 
 /* EFECTES DE TRANSICIÓ */
 .effect-fade .bg-layer {
-  -webkit-transition: opacity 2s ease-in-out;
-  transition: opacity 2s ease-in-out;
+  -webkit-transition: opacity 1.8s ease-in-out;
+  transition: opacity 1.8s ease-in-out;
 }
 
 .effect-zoom .bg-layer {
-  -webkit-transform: scale(1.08);
-  transform: scale(1.08);
-  -webkit-transition: opacity 2s ease-in-out, -webkit-transform 3s ease-out;
-  transition: opacity 2s ease-in-out, transform 3s ease-out;
+  -webkit-transform: scale(1.06);
+  transform: scale(1.06);
+  -webkit-transition: opacity 1.8s ease-in-out, -webkit-transform 2.5s ease-out;
+  transition: opacity 1.8s ease-in-out, transform 2.5s ease-out;
 }
 .effect-zoom .bg-layer.active {
   -webkit-transform: scale(1);
@@ -57,7 +57,7 @@ html, body {
   opacity: 1;
 }
 
-/* Capa per al control de brillantor / Mode Nit */
+/* Overlay de Brillantor / Mode Nit */
 #brightness-overlay {
   position: absolute;
   top: 0;
@@ -71,36 +71,39 @@ html, body {
   transition: opacity 1s ease;
 }
 
-/* Gradient fosc inferior */
 .scrim-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 50%;
-  background: -webkit-linear-gradient(bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
   background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
   z-index: 3;
   pointer-events: none;
 }
 
-/* Widget Info */
+/* WIDGET CONTAINER & ALINEACIÓ DRETA PER DEFECTE */
 .widget-container {
   position: absolute;
-  bottom: 6vw;
-  left: 6vw;
   z-index: 4;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Alineat a la dreta */
+  text-align: right;     /* Text alineat a la dreta */
 }
 
+/* POSICIONS DEL WIDGET */
+body.pos-bottom-right .widget-container { bottom: 6vw; right: 6vw; left: auto; top: auto; align-items: flex-end; text-align: right; }
+body.pos-bottom-left .widget-container { bottom: 6vw; left: 6vw; right: auto; top: auto; align-items: flex-start; text-align: left; }
+body.pos-top-right .widget-container { top: 6vw; right: 6vw; left: auto; bottom: auto; align-items: flex-end; text-align: right; }
+body.pos-top-left .widget-container { top: 6vw; left: 6vw; right: auto; bottom: auto; align-items: flex-start; text-align: left; }
+
+/* MIDES DE TEXT (+25% Data i Temp per defecte) */
 .weather-row {
-  display: -webkit-box;
-  display: -webkit-flex;
   display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
   align-items: center;
-  font-size: 2.2vw;
+  font-size: 2.75vw; /* +25% respecte al valor original de 2.2vw */
   font-weight: 500;
   margin-bottom: 0.2vw;
   opacity: 0.95;
@@ -108,24 +111,7 @@ html, body {
 
 #weather-icon {
   margin-right: 0.6vw;
-  font-size: 2.5vw;
-}
-
-/* Colors de la temperatura segons el clima */
-#temp-val.temp-cold {
-  color: #64d2ff; /* Blau: Fred (<= 12°C) */
-}
-
-#temp-val.temp-normal {
-  color: #30d158; /* Verd: Normal / Temperat (13°C - 24°C) */
-}
-
-#temp-val.temp-hot {
-  color: #ff9f0a; /* Taronja: Calor (25°C - 34°C) */
-}
-
-#temp-val.temp-extreme-hot {
-  color: #ff453a; /* Vermell: Molta calor (>= 35°C) */
+  font-size: 3.1vw;
 }
 
 #clock-digital {
@@ -139,13 +125,63 @@ html, body {
 }
 
 #date-val {
-  font-size: 2vw;
+  font-size: 2.5vw; /* +25% respecte al valor original de 2vw */
   font-weight: 400;
-  margin-top: 1vw;
+  margin-top: 0.8vw;
   opacity: 0.85;
 }
 
-/* BOTÓ RODA DENTADA */
+/* ESCALES DE MIDA DE TEXT DES DE CONFIGURACIÓ */
+body.size-large #clock-digital { font-size: 13.5vw; }
+body.size-large .weather-row { font-size: 3.4vw; }
+body.size-large #date-val { font-size: 3.1vw; }
+
+body.size-xlarge #clock-digital { font-size: 16vw; }
+body.size-xlarge .weather-row { font-size: 4vw; }
+body.size-xlarge #date-val { font-size: 3.7vw; }
+
+/* COLORS DE TEMPERATURA */
+#temp-val.temp-cold { color: #64d2ff; }
+#temp-val.temp-normal { color: #30d158; }
+#temp-val.temp-hot { color: #ff9f0a; }
+#temp-val.temp-extreme-hot { color: #ff453a; }
+
+/* BOTONS DE NAVEGACIÓ TÀCTIL (< i >) */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 36px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, background 0.2s;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.left-btn { left: 25px; }
+.right-btn { right: 25px; }
+
+.nav-btn.visible, .settings-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* BOTÓ CONFIGURACIÓ */
 .settings-btn {
   position: absolute;
   top: 25px;
@@ -160,17 +196,11 @@ html, body {
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  -webkit-transition: opacity 0.4s ease;
   transition: opacity 0.4s ease;
   backdrop-filter: blur(5px);
 }
 
-.settings-btn.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* FINESTRA MODAL CONFIGURACIÓ */
+/* MODAL CONFIGURACIÓ */
 .modal-overlay {
   position: absolute;
   top: 0;
@@ -179,14 +209,8 @@ html, body {
   height: 100%;
   background: rgba(0, 0, 0, 0.75);
   z-index: 20;
-  display: -webkit-box;
-  display: -webkit-flex;
   display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
   justify-content: center;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
   align-items: center;
   opacity: 1;
   transition: opacity 0.3s ease;
@@ -204,7 +228,9 @@ html, body {
   border-radius: 18px;
   padding: 30px;
   width: 90%;
-  max-width: 450px;
+  max-width: 460px;
+  max-height: 85vh;
+  overflow-y: auto;
   color: #fff;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
 }
@@ -217,17 +243,8 @@ html, body {
   padding-bottom: 10px;
 }
 
-.config-group {
-  margin-bottom: 20px;
-}
-
-.config-group label {
-  display: block;
-  font-size: 0.95rem;
-  margin-bottom: 8px;
-  color: #ddd;
-}
-
+.config-group { margin-bottom: 18px; }
+.config-group label { display: block; font-size: 0.95rem; margin-bottom: 8px; color: #ddd; }
 .config-group select, .config-group input[type="range"] {
   width: 100%;
   padding: 10px;
@@ -239,9 +256,7 @@ html, body {
 }
 
 .checkbox-list label {
-  display: -webkit-box;
   display: flex;
-  -webkit-box-align: center;
   align-items: center;
   gap: 10px;
   margin-bottom: 8px;
@@ -260,17 +275,4 @@ html, body {
   font-weight: 600;
   cursor: pointer;
   margin-top: 10px;
-}
-
-.btn-close:active {
-  background: #0066cc;
-}
-
-/* Mode Vertical */
-@media (orientation: portrait) {
-  .widget-container { bottom: 8vh; left: 8vh; }
-  .weather-row { font-size: 4vw; }
-  #weather-icon { font-size: 4.5vw; }
-  #clock-digital { font-size: 20vw; }
-  #date-val { font-size: 3.5vw; margin-top: 2vw; }
 }
