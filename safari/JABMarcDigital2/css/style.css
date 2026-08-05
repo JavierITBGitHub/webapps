@@ -32,13 +32,11 @@ html, body {
 }
 
 /* EFECTES DE TRANSICIÓ */
-/* 1. Fade (Defecte) */
 .effect-fade .bg-layer {
   -webkit-transition: opacity 2s ease-in-out;
   transition: opacity 2s ease-in-out;
 }
 
-/* 2. Zoom */
 .effect-zoom .bg-layer {
   -webkit-transform: scale(1.08);
   transform: scale(1.08);
@@ -50,7 +48,6 @@ html, body {
   transform: scale(1);
 }
 
-/* 3. Directe / Sense efecte */
 .effect-none .bg-layer {
   -webkit-transition: none !important;
   transition: none !important;
@@ -60,7 +57,7 @@ html, body {
   opacity: 1;
 }
 
-/* Capa per al control de brillantor / intensitat de llum */
+/* Capa per al control de brillantor / Mode Nit */
 #brightness-overlay {
   position: absolute;
   top: 0;
@@ -68,9 +65,10 @@ html, body {
   width: 100%;
   height: 100%;
   background-color: black;
-  opacity: 0; /* 0 = 100% brillantor, 0.8 = 20% brillantor */
+  opacity: 0;
   z-index: 2;
   pointer-events: none;
+  transition: opacity 1s ease;
 }
 
 /* Gradient fosc inferior */
@@ -111,6 +109,23 @@ html, body {
 #weather-icon {
   margin-right: 0.6vw;
   font-size: 2.5vw;
+}
+
+/* Colors de la temperatura segons el clima */
+#temp-val.temp-cold {
+  color: #64d2ff; /* Blau: Fred (<= 12°C) */
+}
+
+#temp-val.temp-normal {
+  color: #30d158; /* Verd: Normal / Temperat (13°C - 24°C) */
+}
+
+#temp-val.temp-hot {
+  color: #ff9f0a; /* Taronja: Calor (25°C - 34°C) */
+}
+
+#temp-val.temp-extreme-hot {
+  color: #ff453a; /* Vermell: Molta calor (>= 35°C) */
 }
 
 #clock-digital {
