@@ -57,7 +57,7 @@ html, body {
   opacity: 1;
 }
 
-/* Overlay de Brillantor / Mode Nit */
+/* Overlay de Brillantor / Mode Nit (Cobreix TOTA la pantalla, text inclòs) */
 #brightness-overlay {
   position: absolute;
   top: 0;
@@ -66,7 +66,7 @@ html, body {
   height: 100%;
   background-color: black;
   opacity: 0;
-  z-index: 2;
+  z-index: 15; /* Pujat a 15 per fosquejar imatges i text */
   pointer-events: none;
   transition: opacity 1s ease;
 }
@@ -82,7 +82,7 @@ html, body {
   pointer-events: none;
 }
 
-/* WIDGET CONTAINER & ALINEACIÓ DRETA PER DEFECTE OK */
+/* WIDGET CONTAINER & ALINEACIÓ DRETA PER DEFECTE */
 .widget-container {
   position: absolute;
   z-index: 4;
@@ -103,7 +103,7 @@ body.pos-top-left .widget-container { top: 6vw; left: 6vw; right: auto; bottom: 
 .weather-row {
   display: flex;
   align-items: center;
-  font-size: 2.75vw; /* +25% respecte al valor original de 2.2vw */
+  font-size: 2.75vw;
   font-weight: 500;
   margin-bottom: 0.2vw;
   opacity: 0.95;
@@ -125,7 +125,7 @@ body.pos-top-left .widget-container { top: 6vw; left: 6vw; right: auto; bottom: 
 }
 
 #date-val {
-  font-size: 2.5vw; /* +25% respecte al valor original de 2vw */
+  font-size: 2.5vw;
   font-weight: 400;
   margin-top: 0.8vw;
   opacity: 0.85;
@@ -151,7 +151,7 @@ body.size-xlarge #date-val { font-size: 3.7vw; }
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
+  z-index: 16; /* Pujat a 16 per quedar per sobre del filtro de brillantor */
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.25);
   font-size: 36px;
@@ -186,7 +186,7 @@ body.size-xlarge #date-val { font-size: 3.7vw; }
   position: absolute;
   top: 25px;
   right: 25px;
-  z-index: 10;
+  z-index: 16; /* Pujat a 16 */
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 28px;

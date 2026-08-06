@@ -318,6 +318,12 @@ rangeSpeed.addEventListener('input', function() {
   speedVal.textContent = formatMinutsText(this.value);
 });
 
+/* Canvi en temps real de la brillantor en moure el lliscador */
+rangeBrightness.addEventListener('input', function() {
+  config.brightness = this.value;
+  actualitzaBrillantor();
+});
+
 function aplicarConfiguracio() {
   clockEl.style.display = config.showClock ? 'block' : 'none';
   dateEl.style.display = config.showDate ? 'block' : 'none';
@@ -337,7 +343,7 @@ function actualitzaBrillantor() {
   var esModeNit = hora >= 0 && hora < 6;
 
   if (esModeNit) {
-    brightnessOverlay.style.opacity = 0.80;
+    brightnessOverlay.style.opacity = 0.80; // 20% de llum de 00:00h a 06:00h
   } else {
     var opacitatFosca = (100 - config.brightness) / 100;
     brightnessOverlay.style.opacity = opacitatFosca;
@@ -416,7 +422,6 @@ function actualitzaRellotge() {
   actualitzaBrillantor();
 }
 
-/* Retorna la icona del temps avaluant si és dia (isDay = 1) o nit (isDay = 0) */
 function getIconaTemps(code, isDay) {
   var esNit = (isDay === 0);
 
@@ -446,7 +451,7 @@ function carregarTempsSeva() {
       if (data && data.current_weather) {
         var temp = Math.round(data.current_weather.temperature);
         var code = data.current_weather.weathercode;
-        var isDay = data.current_weather.is_day; // Open-Meteo retorna 1 per dia i 0 per nit
+        var isDay = data.current_weather.is_day;
 
         tempEl.textContent = temp + "°C";
         weatherIconEl.textContent = getIconaTemps(code, isDay);
