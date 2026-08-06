@@ -225,7 +225,7 @@ var timerCanviFoto = null;
 var hideControlsTimer = null;
 var preloadedImages = {};
 
-// DOM Elements
+// DOM Elements OK
 var layer1 = document.getElementById('bg-layer-1');
 var layer2 = document.getElementById('bg-layer-2');
 var clockEl = document.getElementById('clock-digital');
