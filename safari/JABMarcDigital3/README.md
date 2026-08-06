@@ -1,42 +1,51 @@
-# Marc Digital de Fotos -- ARTE 🖼️⏰
+# Marc Digital v3.0
 
-Un marc digital de fotos interactiu dissenyat per a tauletes (com iPad) o pantalles dedicades. Mostra una galeria de fotos en pantalla completa amb transicions fluides, precàrrega d'imatges i informació en temps real sobre l'hora, la data i el temps meteorològic de Seva.
+Un projecte complet d'aplicació web per transformar qualsevol tauleta (iPad, Android) o pantalla en un marc digital de fotos elegant, adaptable i funcional.
 
 ---
 
-## 🌟 Novetats i Característiques Principals
+## 🚀 Novetats a la Versió 3.0
 
-- **Galeria de Fotos i Precàrrega Fluida:**
-  - **Precàrrega de 3 fotos:** Les imatges es carreguen en segon pla per garantir transicions immediates i sense galledes en blanc.
-  - **Navegació Tàctil Manual:** En tocar la pantalla, apareixen les fletes `<` i `>` centrades verticalment als costats per canviar a la foto següent o anterior.
-  - **Temps en Minuts Senders:** Canvi automàtic configurable exclusivament en minuts (des de 0 minuts/fixe fins a 60 minuts).
+* **Detecció d'Orientació d'Imatges (Vertical vs Horitzontal):** Les fotografies verticals es detecten automàticament i s'ajusten (`background-size: contain`) sobre un fons fosc suau per evitar retalls agressius o que es vegin "tombades".
+* **Adaptació Responsive per a Pantalla Vertical (`@media portrait`):** Si es gira la tauleta de posició horitzontal a vertical, la mida del text (rellotge, data i temps) i els marges s'adapten dinàmicament per no trepitjar la imatge ni el centre de la pantalla.
+* **Tractament d'Errors en Càrrega d'Imatges:** Si un fitxer d'imatge s'ha esborrat o té un nom incorrecte al codi, l'aplicació l'omet automàticament i salta a la següent sense mostrar una pantalla en negre.
+* **Navegació per Gestos Tàctils (Swipe):** Glissa el dit cap a la dreta o cap a l'esquerra en qualsevol punt de la pantalla per canviar de foto sense haver d'utilitzar els botons.
+* **Mode Pantalla Completa (Fullscreen API):** Afegit un botó dedicat al menú de configuració per ocultar la interfície del navegador i aconseguir una experiència 100% de marc digital.
 
-- **Disseny i Alineació de Text:**
-  - **Alineat a la dreta:** L'hora, la data i la temperatura estan alineats a la dreta.
-  - **Mida de Data i Temperatura +25%:** Augmentada la visibilitat de la data i el temps.
-  - **Personalització de Mida i Posició:** Opció des del menú de configuració per canviar la mida del text (*Normal, Gran, Molt gran*) i la posició del widget (*Abaix Dreta, Abaix Esquerra, Dalt Dreta, Dalt Esquerra*).
+---
 
-- **Informació del Temps (Seva - Open-Meteo API):**
-  - Icona i temperatura actualitzades cada 15 minuts amb indicació de colors segons la temperatura:
-    - 🔵 **Blau** ($\le 12\text{ °C}$): Fred
-    - 🟢 **Verd** ($13\text{ °C} - 24\text{ °C}$): Normal / Temperat
-    - 🟠 **Taronja** ($25\text{ °C} - 34\text{ °C}$): Calor
-    - 🔴 **Vermell** ($\ge 35\text{ °C}$): Molta calor
+## ⚡ Característiques Principals
 
-- **Mode Nit Automàtic i Brillantor:**
-  - Reducció automàtica de la brillantor al 20% de llum entre les **00:00h i les 06:00h**.
-  - Lliscador per ajustar la brillantor manualment.
+1. **Galeria i Transicions:**
+   * Barreja aleatòria (*Shuffle*) automàtica de les fotos en iniciar.
+   * Precàrrega en segon pla (*preloading*) per a transicions fluides.
+   * Efectes de transició configurables: *Fade* (suau), *Zoom* (Ken Burns) o directat (*none*).
+   * Interval de canvi programable (de 1 a 120 minuts, o imatge fixa).
+
+2. **Widget d'Informació:**
+   * Rellotge digital de gran format amb tipografia optimitzada.
+   * Data en català formatada correctament.
+   * Informació meteorològica en temps real (mitjançant l'API gratuïta d'Open-Meteo per a Seva/Osona) amb icona i color segons la temperatura.
+   * Posició del widget configurable (qualsevol de les 4 cantonades).
+   * Mides de font ajustables (Normal, Gran, Molt gran).
+
+3. **Control de Brillantor i Mode Nit:**
+   * Lliscador de brillantor manual des del menú de configuració.
+   * Atenuació nocturna automàtica entre les 00:00h i les 06:00h per no molestar a les fosques.
+
+4. **Interfície i Usabilitat:**
+   * Ocultació automàtica dels controls tàctils (fletxes i roda de configuració) al cap de 4 segons d'inactivitat.
+   * Guardat de totes les preferències de l'usuari en el navegador via `localStorage`.
 
 ---
 
 ## 📁 Estructura del Projecte
 
 ```text
-marc-digital-arte/
-├── index.html         # Estructura HTML5 i finestra de configuració
+marc-digital/
+├── index.html         # Estructura principal de l'aplicació i modal de configuració
 ├── css/
-│   └── style.css      # Estils visuals, escalat de text i posicionament
+│   └── style.css      # Estils visuals, animacions, media queries i adaptabilitat
 ├── js/
-│   └── app.js         # Precàrrega, temporitzadors en minuts i control tàctil
-├── img/               # Fons de pantalla i fotografies (.jpg, .png, .gif)
-└── README.md          # Documentació del projecte
+│   └── app.js         # Llista de fotos, lògica de transició, meteo, temps i gestos
+└── img/               # Carpeta amb la col·lecció de fotografies (.jpg, .png, .gif)

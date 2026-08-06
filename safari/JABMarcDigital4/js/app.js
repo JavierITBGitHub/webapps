@@ -1,5 +1,5 @@
-/* Llista completa d'imatges */
-var imatges = [
+/* Llista d'imatges base */
+var imatgesBase = [
   'img/9eMes_SitgesFestaMajor-139.JPG',
   'img/2015NY-535.JPG',
   'img/20170811_204125.jpg',
@@ -219,17 +219,14 @@ var imatges = [
   'img/Viladrau_2017 (4).JPG'
 ];
 
+var imatges = imatgesBase.slice();
 var indexImatge = 0;
 var currentLayer = 1;
 var timerCanviFoto = null;
 var hideControlsTimer = null;
 var preloadedImages = {};
 
-// Gestió de Gestos Swipe
-var touchStartX = 0;
-var touchStartY = 0;
-
-// Elements DOM
+// DOM Elements
 var layer1 = document.getElementById('bg-layer-1');
 var layer2 = document.getElementById('bg-layer-2');
 var clockEl = document.getElementById('clock-digital');
@@ -239,13 +236,12 @@ var tempEl = document.getElementById('temp-val');
 var weatherIconEl = document.getElementById('weather-icon');
 var brightnessOverlay = document.getElementById('brightness-overlay');
 
-// UI Controls
+// Controls UI
 var btnPrev = document.getElementById('btn-prev');
 var btnNext = document.getElementById('btn-next');
 var btnSettings = document.getElementById('btn-settings');
 var modalSettings = document.getElementById('settings-modal');
 var btnCloseSettings = document.getElementById('btn-close-settings');
-var btnFullscreen = document.getElementById('btn-fullscreen');
 
 var rangeSpeed = document.getElementById('range-speed');
 var speedVal = document.getElementById('speed-val');
@@ -257,6 +253,11 @@ var chkClock = document.getElementById('chk-clock');
 var chkDate = document.getElementById('chk-date');
 var chkWeather = document.getElementById('chk-weather');
 
+var inputUpload = document.getElementById('input-upload-photos');
+var btnUpload = document.getElementById('btn-upload');
+var uploadStatus = document.getElementById('upload-status');
+
+/* Config per defecte (2 minuts) */
 var config = {
   speedMinutes: 2,
   textSize: 'normal',
@@ -268,6 +269,43 @@ var config = {
   showWeather: true
 };
 
+/* --- ENVIAMENT DE FOTOS AL SERVIDOR (PHP) --- */
+btnUpload.addEventListener('click', function() {
+  inputUpload.click();
+});
+
+inputUpload.addEventListener('change', function(e) {
+  var files = e.target.files;
+  if (!files || files.length === 0) return;
+
+  var formData = new FormData();
+  for (var i = 0; i < files.length; i++) {
+    formData.append('photos[]', files[i]);
+  }
+
+  uploadStatus.textContent = "Pujant " + files.length + " foto(s) al servidor...";
+
+  fetch('upload.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.success && data.uploaded.length > 0) {
+      data.uploaded.forEach(function(rutaFoto) {
+        imatges.push(rutaFoto);
+      });
+      uploadStatus.textContent = data.uploaded.length + " foto(s) desades al servidor amb èxit!";
+    } else {
+      uploadStatus.textContent = "Error en pujar les fotos al servidor.";
+    }
+  })
+  .catch(function(err) {
+    uploadStatus.textContent = "Error de connexió amb el servidor.";
+  });
+});
+
+/* Format de text per a la temporització (0 a 120 minuts) */
 function formatMinutsText(minuts) {
   minuts = parseInt(minuts, 10);
   if (minuts === 0) return "Fixa (sense canvi)";
@@ -282,6 +320,7 @@ function formatMinutsText(minuts) {
   }
 }
 
+/* Precàrrega de les 3 imatges següents */
 function precarrregarImatges() {
   if (!imatges || imatges.length === 0) return;
   for (var offset = 1; offset <= 3; offset++) {
@@ -298,7 +337,9 @@ function precarrregarImatges() {
 function carregarConfiguracio() {
   var savedConfig = localStorage.getItem('marc_digital_arte_config');
   if (savedConfig) {
-    try { config = Object.assign(config, JSON.parse(savedConfig)); } catch(e){}
+    try {
+      config = Object.assign(config, JSON.parse(savedConfig));
+    } catch(e){}
   }
 
   rangeSpeed.value = config.speedMinutes;
@@ -316,11 +357,6 @@ function carregarConfiguracio() {
 
 rangeSpeed.addEventListener('input', function() {
   speedVal.textContent = formatMinutsText(this.value);
-});
-
-rangeBrightness.addEventListener('input', function() {
-  config.brightness = this.value;
-  actualitzaBrillantor();
 });
 
 function aplicarConfiguracio() {
@@ -372,36 +408,29 @@ function barrejarFotos(array) {
 function canviarImatgeFons(direccio) {
   if (!imatges || imatges.length === 0) return;
 
-  indexImatge = (indexImatge + direccio + imatges.length) % imatges.length;
-  var nextImgUrl = imatges[indexImatge];
-
-  var imgTest = new Image();
-  imgTest.src = encodeURI(nextImgUrl);
-
-  imgTest.onload = function() {
-    var isPortrait = imgTest.naturalHeight > imgTest.naturalWidth;
-    var targetLayer = (currentLayer === 1) ? layer2 : layer1;
-    var currentLayerEl = (currentLayer === 1) ? layer1 : layer2;
-
-    targetLayer.style.backgroundImage = "url('" + encodeURI(nextImgUrl) + "')";
-    
-    if (isPortrait) {
-      targetLayer.classList.add('portrait-fit');
-    } else {
-      targetLayer.classList.remove('portrait-fit');
-    }
-
-    targetLayer.classList.add('active');
-    currentLayerEl.classList.remove('active');
-    currentLayer = (currentLayer === 1) ? 2 : 1;
-
+  if (direccio === 0) {
+    layer1.style.backgroundImage = "url('" + encodeURI(imatges[indexImatge]) + "')";
+    layer1.classList.add('active');
     precarrregarImatges();
-  };
+    return;
+  }
 
-  imgTest.onerror = function() {
-    imatges.splice(indexImatge, 1);
-    canviarImatgeFons(direccio >= 0 ? 0 : -1);
-  };
+  indexImatge = (indexImatge + direccio + imatges.length) % imatges.length;
+  var formattedUrl = encodeURI(imatges[indexImatge]);
+
+  precarrregarImatges();
+
+  if (currentLayer === 1) {
+    layer2.style.backgroundImage = "url('" + formattedUrl + "')";
+    layer2.classList.add('active');
+    layer1.classList.remove('active');
+    currentLayer = 2;
+  } else {
+    layer1.style.backgroundImage = "url('" + formattedUrl + "')";
+    layer1.classList.add('active');
+    layer2.classList.remove('active');
+    currentLayer = 1;
+  }
 }
 
 function formatarDataCatalana(data) {
@@ -430,6 +459,7 @@ function actualitzaRellotge() {
 
 function getIconaTemps(code, isDay) {
   var esNit = (isDay === 0);
+
   if (code === 0) return esNit ? '🌙' : '☀️';
   if (code >= 1 && code <= 3) return esNit ? '☁️🌙' : '⛅';
   if (code >= 45 && code <= 48) return '🌫️';
@@ -481,29 +511,6 @@ function mostrarControlsUI() {
   }, 4000);
 }
 
-document.body.addEventListener('touchstart', function(e) {
-  touchStartX = e.changedTouches[0].screenX;
-  touchStartY = e.changedTouches[0].screenY;
-  onPantallaTocada(e);
-}, { passive: true });
-
-document.body.addEventListener('touchend', function(e) {
-  var touchEndX = e.changedTouches[0].screenX;
-  var touchEndY = e.changedTouches[0].screenY;
-  
-  var diffX = touchEndX - touchStartX;
-  var diffY = touchEndY - touchStartY;
-
-  if (Math.abs(diffX) > 60 && Math.abs(diffY) < 50) {
-    if (diffX < 0) {
-      canviarImatgeFons(1);
-    } else {
-      canviarImatgeFons(-1);
-    }
-    iniciarTemporitzador();
-  }
-}, { passive: true });
-
 function onPantallaTocada(e) {
   if (!modalSettings.contains(e.target) && 
       !btnSettings.contains(e.target) && 
@@ -513,6 +520,7 @@ function onPantallaTocada(e) {
   }
 }
 
+document.body.addEventListener('touchstart', onPantallaTocada, { passive: true });
 document.body.addEventListener('click', onPantallaTocada);
 
 btnPrev.addEventListener('click', function(e) {
@@ -549,17 +557,7 @@ btnCloseSettings.addEventListener('click', function() {
   btnNext.classList.remove('visible');
 });
 
-btnFullscreen.addEventListener('click', function() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(function(){});
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-  }
-});
-
-/* Inicialització */
+// Inicialització
 barrejarFotos(imatges);
 canviarImatgeFons(0);
 actualitzaRellotge();
